@@ -246,8 +246,15 @@ function cmdEval(message, sender, type) {
         sender.sendMessage("\xA7c" + ex);
     }
 }
-function disableEcho() {
-    
+var currEvalPlr;
+var evalEchoPlrs = [];
+function toggleCfEcho() {
+    var i = evalEchoPlrs.indexOf(currEvalPlr);
+    if (i != -1) {
+        evalEchoPlrs.splice(i, 1);
+    } else {
+        evalEchoPlrs.push(currEvalPlr);
+    }
 }
 
 var plugin = getPlugin();
@@ -278,6 +285,7 @@ registerCommand({
     permissionMessage: "\xA7cFak u gooby",
     aliases: [ "coffee", "coffeescript" ]
 }, function(sender, label, args) {
+    currEvalPlr = sender
     var message = args.join(" ");
 
     if (message.length < 1) {
@@ -293,6 +301,8 @@ registerCommand({
         return;
     }
 
-    sender.sendMessage("\xA78>> " + coffee);
+    if (evalEchoPlrs.indexOf(sender) != -1) {
+        sender.sendMessage("\xA78>> " + coffee);
+    }
     cmdEval(coffee, sender, args.join(" "));
 })
