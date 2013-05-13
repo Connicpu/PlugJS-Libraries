@@ -12,7 +12,8 @@ libraries = [
     "money_drops.coffee",
     "fireworks.js",
     "enchants.js",
-    "fun_commands.coffee"
+    "fun_commands.coffee",
+    "dirty_mouth.coffee",
 ];
 
 function log(msg, level) {

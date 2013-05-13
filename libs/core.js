@@ -163,10 +163,8 @@ function registerCommand(data, func) {
     
     var command;
     if ((command = loader.server.commandMap.getCommand(data.name)) && command["class"].equals(commandExecClass)) {
-        log("Updating command " + data.name);
         command.executor.state.func = func;
     } else {
-        log("Registering command " + data.name);
         loader.server.commandMap.register("js:", newCommand());
     }
 }
@@ -195,7 +193,8 @@ function defineGlobal(name) {
 function loadCoffee(file) {
     var coffee = read_file(file);
     var coffeeMd5 = md5(coffee);
-    var cachePath = "./plugins/PlugJS/coffee_cache/" + new java.io.File(file).name;
+    var fileName = _s(new java.io.File(file).name);
+    var cachePath = "./plugins/PlugJS/coffee_cache/" + fileName.replace(/\.coffee$/, ".js");
     new java.io.File("./plugins/PlugJS/coffee_cache/").mkdirs();
 
     if (new java.io.File(cachePath).exists()) {
@@ -206,8 +205,10 @@ function loadCoffee(file) {
         }
     }
 
+    log("Compiling " + fileName, 'a');
+
     var javascript = CoffeeScript.compile(coffee, {bare: true});
-    save_file(cachePath, "/*" + coffeeMd5 + "*/" + javascript);
+    save_file(cachePath, "/*" + coffeeMd5 + "*/\n" + javascript);
     plugin.js.eval(javascript);
 }
 function require(lib) {
@@ -217,8 +218,27 @@ function require(lib) {
         load("./plugins/PlugJS/libs/" + lib);
     }
 }
-function callEvent(handler, event) {
-    
+function callEvent(handler, event, data) {
+    if (handler[event]) {
+        handler[event](data);
+    }
+}
+function cmdEval(message, sender) {
+    try {
+        var p = sender;
+        var loc = p.location;
+        var ext = {};
+        callEvent(js, "extensions", ext);
+        var result = eval(message);
+        if (result === undefined) {
+            result = "undefined";
+        } else if (result === null) {
+            result = "null";
+        }
+        sender.sendMessage("\xA7a=> " + result);
+    } catch(ex) {
+        sender.sendMessage("\xA7c" + ex);
+    }
 }
 
 var plugin = getPlugin();
@@ -237,17 +257,33 @@ registerCommand({
         return false;
     }
     sender.sendMessage("\xA77>> " + message);
-    try {
-        var p = sender;
-        var loc = p.location;
-        var result = eval(message);
-        if (result === undefined) {
-            result = "undefined";
-        } else if (result === null) {
-            result = "null";
-        }
-        sender.sendMessage("\xA7a=> " + result);
-    } catch(ex) {
-        sender.sendMessage("\xA7c" + ex);
-    }
+    
+    cmdEval(message, sender);
 });
+
+registerCommand({
+    name: "cf",
+    description: "Executes coffeescript in the server",
+    usage: "\xA7cUsage: /<command> [coffeescript code]",
+    permission: registerPermission("js.eval", "op"),
+    permissionMessage: "\xA7cFak u gooby",
+    aliases: [ "coffee", "coffeescript" ]
+}, function(sender, label, args) {
+    var message = args.join(" ");
+
+    if (message.length < 1) {
+        return false;
+    }
+    sender.sendMessage("\xA77>> " + message);
+
+    var coffee;
+    try {
+        coffee = CoffeeScript.compile(message, {bare: true});
+    } catch (ex) {
+        sender.sendMessage("\xA7cError compiling coffee: " + ex);
+        return;
+    }
+
+    sender.sendMessage("\xA78>> " + coffee);
+    cmdEval(coffee, sender);
+})

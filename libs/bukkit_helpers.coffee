@@ -81,3 +81,27 @@ safeTeleport = (entity, location) ->
   location = suitableGround(location)
   throw "No safe location" if not location
   entity.teleport(location)
+nearestEntity = (searchEntity, type) ->
+  searchL = if searchEntity instanceof org.bukkit.Location
+    searchEntity
+  else searchEntity.location
+  target = null
+
+  entities = _a searchEntity.world.entities
+
+  entities.splice(entities.indexOf(searchEntity), 1)
+
+  if type
+    type = org.bukkit.entity[type] if typeof(type) == 'string'
+    _entities = entities
+    entities = []
+    for entity in _entities
+      entities.push(entity) if entity instanceof type
+
+  for entity in entities
+    targetL = target.location if target
+    entityL = entity.location
+
+    target = entity if not target or entityL.distance(searchL) < targetL.distance(searchL)
+
+  return target
