@@ -53,6 +53,13 @@ JsPersistence = new (function() {
         this.objects[key] = data;
         return true;
     }
+    this.tryGet = function(key, _default) {
+        if (this.objects[key]) {
+            return this.objects[key];
+        } else {
+            return this.objects[key] = _default;
+        }
+    }
 })();
 
 JsPersistence.load();

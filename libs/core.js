@@ -247,7 +247,7 @@ function cmdEval(message, sender, type) {
     }
 }
 var currEvalPlr;
-var evalEchoPlrs = [];
+var evalEchoPlrs = JsPersistence.tryGet("evalEchoPlrs", []);
 function toggleCfEcho() {
     var i = evalEchoPlrs.indexOf(currEvalPlr);
     if (i != -1) {
@@ -305,4 +305,16 @@ registerCommand({
         sender.sendMessage("\xA78>> " + coffee);
     }
     cmdEval(coffee, sender, args.join(" "));
-})
+});
+
+registerEvent(player, "command", function(event) {
+    if (/^\/reloadjs\b/i.test(_s(event.message))) {
+        JsPersistence.save();
+    }
+});
+
+registerEvent(server, "pluginDisable", function(event) {
+    if (event.plugin.name == plugin.name) {
+        JsPersistence.save();
+    }
+});

@@ -40,3 +40,10 @@ function stringArray(array) {
     }
     return _new;
 }
+function numArr(start, end) {
+    var res = [];
+    for (var i = start; i <= end; ++i) {
+        res.push(i);
+    }
+    return res;
+}

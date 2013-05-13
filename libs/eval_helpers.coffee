@@ -7,4 +7,7 @@ registerEvent js, "extensions", (event) ->
   event.ext.en = org.bukkit.entity;
 
   for player in event.ext.pl
-  	event.ext[player.name] = player if not event.ext[player.name]
+    event.ext[player.name] = player if not event.ext[player.name]
+
+registerEvent js, "evalComplete", (event) ->
+  

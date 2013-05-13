@@ -2,6 +2,7 @@ libraries = [
     "js_persistence.js",
     "lang_helpers.js",
     "core.js",
+    "async.js",
     "coffee-script.js",
     "bukkit_helpers.coffee",
     "eval_helpers.coffee",
