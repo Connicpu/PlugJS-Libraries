@@ -2,6 +2,7 @@ replacers = [
   [/fuck/i, 'frik']
   [/\bass/i, 'bass']
   [/shit/i, 'shite']
+  [/fag(g)?(ot)?/i, "bob saggot"]
 ]
 
 registerPermission "js.censor.bypass", "false"
