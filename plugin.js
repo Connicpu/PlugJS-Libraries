@@ -4,6 +4,7 @@ libraries = [
     "core.js",
     "coffee-script.js",
     "bukkit_helpers.coffee",
+    "eval_helpers.coffee",
     "tt_war_helpers.js",
     "async.js",
     "permissions.js",

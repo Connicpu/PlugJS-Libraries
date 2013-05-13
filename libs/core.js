@@ -223,15 +223,19 @@ function callEvent(handler, event, data) {
         handler[event](data);
     }
 }
-function cmdEval(message, sender) {
+function cmdEval(message, sender, type) {
     try {
-        var ext = {
-            p: sender,
-            loc: sender.location,
-            eval: eval
-        };
-        callEvent(js, "extensions", ext);
-        var result = ext.eval.call(ext, message)
+        var event = {
+            sender: sender,
+            type: type,
+            ext: { }
+        }
+        callEvent(js, "extensions", event);
+        var result;
+        with (event.ext) {
+            result = eval(message);
+        }
+        callEvent(js, "evalComplete", result);
         if (result === undefined) {
             result = "undefined";
         } else if (result === null) {
@@ -241,6 +245,9 @@ function cmdEval(message, sender) {
     } catch(ex) {
         sender.sendMessage("\xA7c" + ex);
     }
+}
+function disableEcho() {
+    
 }
 
 var plugin = getPlugin();
@@ -260,7 +267,7 @@ registerCommand({
     }
     sender.sendMessage("\xA77>> " + message);
     
-    cmdEval(message, sender);
+    cmdEval(message, sender, args.join(" "));
 });
 
 registerCommand({
@@ -287,5 +294,5 @@ registerCommand({
     }
 
     sender.sendMessage("\xA78>> " + coffee);
-    cmdEval(coffee, sender);
+    cmdEval(coffee, sender, args.join(" "));
 })

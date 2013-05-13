@@ -1,11 +1,3 @@
-# defineGlobal 'suitableGround'
-# defineGlobal 'locationSafe'
-# defineGlobal 'getItemId'
-# defineGlobal 'itemStack'
-# defineGlobal 'BlockInfo'
-# defineGlobal 'cloneLocation'
-# defineGlobal 'safeTeleport'
-
 require 'minecraft_items.coffee'
 
 cloneLocation = (location, args) ->
@@ -106,5 +98,10 @@ nearestEntity = (searchEntity, type) ->
 
   return target
 
-registerEvent js, "extensions", (event) ->
-  event["ent"] = org.bukkit.entity;
+kill = (entity) ->
+  entity = gplr entity if typeof entity == 'string'
+
+  if entity.health
+    entity.health = 0
+  else
+    entity.remove()

@@ -1,5 +1,3 @@
-# defineGlobal 'minecraft_item_regexes'
-
 minecraft_item_regexes = [
   [/^air$/i, 0]
   [/^stone$/i, 1]
