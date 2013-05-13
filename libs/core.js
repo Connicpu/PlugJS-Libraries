@@ -206,24 +206,7 @@ function loadCoffee(file) {
         }
     }
 
-    var globalLines = coffee.match(/^# defineGlobal '(.*?)'$/mg);
-    var globals = [];
-    for (var i in globalLines) {
-        var match = /^# defineGlobal '(.*?)'$/m.exec(globalLines[i])[1];
-        defineGlobal(match);
-        globals.push(match);
-    }
-    var javascript = CoffeeScript.compile(coffee);
-    javascript = javascript.replace(/^([ ]+)?var(.*);$/m, function(match, p1, p2, offset, string) {
-        for (var i in globals) {
-            var varRegex = eval("/" + globals[i] + "(,)?/");
-            match = match.replace(varRegex, "");
-        }
-        if (/^([ ]+)?var([ ]+)?;$/.test(match)) {
-            match = "";
-        }
-        return match;
-    });
+    var javascript = CoffeeScript.compile(coffee, {bare: true});
     save_file(cachePath, "/*" + coffeeMd5 + "*/" + javascript);
     plugin.js.eval(javascript);
 }
