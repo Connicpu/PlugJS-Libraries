@@ -225,11 +225,13 @@ function callEvent(handler, event, data) {
 }
 function cmdEval(message, sender) {
     try {
-        var p = sender;
-        var loc = p.location;
-        var ext = {};
+        var ext = {
+            p: sender,
+            loc: sender.location,
+            eval: eval
+        };
         callEvent(js, "extensions", ext);
-        var result = eval(message);
+        var result = ext.eval.call(ext, message)
         if (result === undefined) {
             result = "undefined";
         } else if (result === null) {

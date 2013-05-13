@@ -105,3 +105,6 @@ nearestEntity = (searchEntity, type) ->
     target = entity if not target or entityL.distance(searchL) < targetL.distance(searchL)
 
   return target
+
+registerEvent js, "extensions", (event) ->
+  event["ent"] = org.bukkit.entity;
