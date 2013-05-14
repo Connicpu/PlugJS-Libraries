@@ -47,3 +47,6 @@ function numArr(start, end) {
     }
     return res;
 }
+function sleep(milliseconds) {
+    java.lang.Thread.sleep(milliseconds);
+}

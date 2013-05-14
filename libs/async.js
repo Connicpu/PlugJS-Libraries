@@ -1,4 +1,4 @@
-function async(func) {
+function async(fn) {
     var thread = new java.lang.Thread(new java.lang.Runnable() {
         run: function() {
             if (typeof(fn) === 'string') {

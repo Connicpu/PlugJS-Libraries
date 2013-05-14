@@ -224,6 +224,7 @@ function callEvent(handler, event, data) {
     }
 }
 function cmdEval(message, sender, type) {
+    currEvalPlr = sender
     try {
         var event = {
             sender: sender,
@@ -235,7 +236,10 @@ function cmdEval(message, sender, type) {
         with (event.ext) {
             result = eval(message);
         }
-        callEvent(js, "evalComplete", result);
+        callEvent(js, "evalComplete", { 
+            sender: sender,
+            result: result 
+        });
         if (result === undefined) {
             result = "undefined";
         } else if (result === null) {
@@ -249,11 +253,11 @@ function cmdEval(message, sender, type) {
 var currEvalPlr;
 var evalEchoPlrs = JsPersistence.tryGet("evalEchoPlrs", []);
 function toggleCfEcho() {
-    var i = evalEchoPlrs.indexOf(currEvalPlr);
+    var i = evalEchoPlrs.indexOf(_s(currEvalPlr.name));
     if (i != -1) {
         evalEchoPlrs.splice(i, 1);
     } else {
-        evalEchoPlrs.push(currEvalPlr);
+        evalEchoPlrs.push(_s(currEvalPlr.name));
     }
 }
 
@@ -274,18 +278,17 @@ registerCommand({
     }
     sender.sendMessage("\xA77>> " + message);
     
-    cmdEval(message, sender, args.join(" "));
+    cmdEval(message, sender, "js");
 });
 
 registerCommand({
     name: "cf",
     description: "Executes coffeescript in the server",
     usage: "\xA7cUsage: /<command> [coffeescript code]",
-    permission: registerPermission("js.eval", "op"),
+    permission: "js.eval",
     permissionMessage: "\xA7cFak u gooby",
     aliases: [ "coffee", "coffeescript" ]
 }, function(sender, label, args) {
-    currEvalPlr = sender
     var message = args.join(" ");
 
     if (message.length < 1) {
@@ -301,14 +304,17 @@ registerCommand({
         return;
     }
 
-    if (evalEchoPlrs.indexOf(sender) != -1) {
+    if (evalEchoPlrs.indexOf(_s(sender.name)) != -1) {
         sender.sendMessage("\xA78>> " + coffee);
     }
-    cmdEval(coffee, sender, args.join(" "));
+    cmdEval(coffee, sender, "cf");
 });
 
 registerEvent(player, "command", function(event) {
+    var message = _s(event.message);
+    log("derp " + message);
     if (/^\/reloadjs\b/i.test(_s(event.message))) {
+        log("herp");
         JsPersistence.save();
     }
 });
