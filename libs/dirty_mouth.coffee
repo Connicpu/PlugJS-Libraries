@@ -3,6 +3,8 @@ replacers = [
   [/\bass/i, 'bass']
   [/shit/i, 'shite']
   [/fag(g)?(ot|et)?/i, "bob saget"]
+  [/\bdarn/i, "damn"]
+  [/bitch/i, "bich"]
 ]
 
 cleanMessage = (message) ->

@@ -81,12 +81,13 @@ function registerPermission(permission, perm_default, parents) {
     return permission;
 }
 function registerHash(name) {
-    if (persistence.containsKey("__hash__" + name)) {
-        return persistence.get("__hash__" + name);
+    var specName = "__hash__" + name;
+    if (persistence.containsKey(specName)) {
+        return persistence.get(specName);
     }
     
-    var hash = new java.util.HashMap();
-    persistence.put("__hash__" + name, hash);
+    var hash = {};
+    persistence.put(specName, hash);
     return hash;
 }
 function registerCommand(data, func) {

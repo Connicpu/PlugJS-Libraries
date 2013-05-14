@@ -1,4 +1,4 @@
-evalResultStack = {}
+evalResultStack = registerHash "evalResultStack"
 
 registerEvent js, "extensions", (event) ->
   event.ext.p = event.sender

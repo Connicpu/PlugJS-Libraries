@@ -105,3 +105,9 @@ kill = (entity) ->
     entity.health = 0
   else
     entity.remove()
+
+boolOnOff = (bool) ->
+  if bool
+    "\xA7aOn"
+  else
+    "\xA7cOff"

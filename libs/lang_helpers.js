@@ -50,3 +50,10 @@ function numArr(start, end) {
 function sleep(milliseconds) {
     java.lang.Thread.sleep(milliseconds);
 }
+function listMembers(obj) {
+    var results = [];
+    for (var i in obj) {
+        results.push(i);
+    }
+    return results;
+}

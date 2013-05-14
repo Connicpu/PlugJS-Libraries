@@ -8,7 +8,7 @@ libraries = [
     "eval_helpers.coffee",
     "tt_war_helpers.js",
     "async.js",
-    "permissions.js",
+    "permissions.coffee",
     "econ.js",
     "metadata.js",
     "money_drops.coffee",
@@ -16,6 +16,7 @@ libraries = [
     "enchants.js",
     "fun_commands.coffee",
     "dirty_mouth.coffee",
+    "group_chats.coffee"
 ];
 
 function log(msg, level) {
