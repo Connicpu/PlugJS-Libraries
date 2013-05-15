@@ -15,12 +15,15 @@ formatChat = (format, fmtEvent) ->
     format = format.replace(":#{param}", fmtEvent[param] || "")
   format.replace(":message", "%2$s")
 
-formatInformation = (event) ->
+formatInformation = (event, params) ->
   fmtEvent =
     prefix: ''
     suffix: ''
     displayName: event.player.displayName
     player: event.player
+  if params
+    for key,param in params
+      fmtEvent[key] = param
   callEvent js, "chatFormat", fmtEvent
   fmtEvent
 

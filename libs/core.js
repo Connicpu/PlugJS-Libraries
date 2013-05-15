@@ -312,16 +312,9 @@ registerCommand({
 });
 
 registerEvent(player, "command", function(event) {
-    var message = _s(event.message);
-    log("derp " + message);
-    if (/^\/reloadjs\b/i.test(_s(event.message))) {
-        log("herp");
-        JsPersistence.save();
-    }
+    JsPersistence.save();
 });
 
 registerEvent(server, "pluginDisable", function(event) {
-    if (event.plugin.name == plugin.name) {
-        JsPersistence.save();
-    }
+    JsPersistence.save();
 });

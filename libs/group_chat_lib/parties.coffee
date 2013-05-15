@@ -12,3 +12,4 @@ disablePartyChat = (player) ->
 partyChat = (event) ->
   party = parties.groups[parties.players[event.player.name]]
   
+  event.format = formatChat adminFormat, formatInformation event, { party: party.name }

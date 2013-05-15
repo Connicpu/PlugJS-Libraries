@@ -166,12 +166,11 @@ registerCommand {
       return false
     parseCoords = (arg) ->
       split = arg.split(',')
-      cloneLocation [
+      cloneLocation getloc
         x: split[0]
         y: split[1]
         z: split[2]
-        world: loader.server.getWorld(split[3])
-      ]
+        world: loader.server.getWorld(split[3]) || sender.world
 
     target = args[args.length - 1]
     target = if isCoords target

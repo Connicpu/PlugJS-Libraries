@@ -63,3 +63,7 @@ JsPersistence = new (function() {
 })();
 
 JsPersistence.load();
+
+function saveJs() {
+    JsPersistence.save();
+}

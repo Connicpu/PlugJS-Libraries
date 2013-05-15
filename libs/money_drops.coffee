@@ -35,4 +35,4 @@ money_drop_rates =
 treasuryName = "Server Treasury"
 
 # Load the backend
-eval(read_file('./plugins/PlugJS/libs/money_drops_lib.js'))
+require 'money_drops_lib.js'
