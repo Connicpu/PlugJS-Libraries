@@ -8,7 +8,17 @@ prefix = (newPrefix, player) ->
   user = permUser player || currEvalPlr
   user.setPrefix(newPrefix.replace(/\&(?=[0-9a-fk-o])/gi, "\xA7"), null)
 
+suffix = (newSuffix, player) ->
+  user = permUser player || currEvalPlr
+  user.setPrefix(newSuffix.replace(/\&(?=[0-9a-fk-o])/gi, "\xA7"), null)
+
+permOption = (option, value, player) ->
+  user = permUser player || currEvalPlr
+  user.setOption(option, value.replace(/\&(?=[0-9a-fk-o])/gi, "\xA7"))
+
 registerEvent js, "chatFormat", (event) ->
   user = permUser event.player
   event.prefix = user.prefix
   event.suffix = user.suffix
+  event.chatcolor = user.getOption "chatcolor"
+  event.clantag = user.getOption "clantag"

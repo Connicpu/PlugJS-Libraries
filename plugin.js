@@ -16,7 +16,8 @@ libraries = [
     "enchants.js",
     "fun_commands.coffee",
     "dirty_mouth.coffee",
-    "group_chats.coffee"
+    "group_chats.coffee",
+    "chatcolors.coffee"
 ];
 
 function log(msg, level) {

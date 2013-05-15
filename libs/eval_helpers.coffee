@@ -18,6 +18,9 @@ registerEvent js, "extensions", (event) ->
 registerEvent js, "evalComplete", (event) ->
   stack = evalResultStack[event.sender.name] ||= []
   stack.threads ||= []
+
+  return unless event.result?
+
   stack.splice 0, 0, event.result
   stack.threads.splice 0, 0, event.result if event.result instanceof java.lang.Thread
 
