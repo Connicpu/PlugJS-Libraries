@@ -21,7 +21,7 @@ suitableGround = (_location) ->
 
   checkDirection _location, "x",  1,  5
   checkDirection _location, "x", -1,  5
-  checkDirection _location, "y",  1, 10
+  checkDirection _location, "y",  1, 20
   checkDirection _location, "y", -1,  5
   checkDirection _location, "z",  1,  5
   checkDirection _location, "z", -1,  5
