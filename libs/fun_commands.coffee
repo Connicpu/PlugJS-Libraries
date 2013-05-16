@@ -169,7 +169,7 @@ registerCommand {
         x: split[0]
         y: split[1]
         z: split[2]
-        world: loader.server.getWorld(split[3]) || sender.world
+        world: loader.server.getWorld(split[3]) || sender.world || players[0].world
 
     target = args[args.length - 1]
     target = if isCoords target
