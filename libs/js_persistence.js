@@ -6,6 +6,8 @@ function read_file(file) {
     while ((line = f_in.readLine()) != null) {
         string += line + '\n';
     }
+
+    f_in.close();
     
     return string;
 }
