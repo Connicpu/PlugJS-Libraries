@@ -68,6 +68,9 @@ for (var i in libraries) {
             load("./plugins/PlugJS/libs/" + lib);
         }
     } catch(ex) {
+        if (ex.rhinoException) {
+            ex = ex.rhinoException.unwrap().cause.unwrap().cause.message;
+        }
         loader.server.broadcast("\xA7cError loading " + lib + ":\n" + ex, "bukkit.broadcast.admin");
     }
 }

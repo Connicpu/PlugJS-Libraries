@@ -1,3 +1,7 @@
+if (!economy) {
+    throw "Economy not found!"
+}
+
 (function(){
     var keys = [];
     for (var i in money_drop_rates) {
