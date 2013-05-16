@@ -69,9 +69,13 @@ for (var i in libraries) {
         }
     } catch(ex) {
         if (ex.rhinoException) {
-            ex = ex.rhinoException.unwrap().cause.unwrap().cause.message;
+            ex = ex.rhinoException;
+            while (ex.unwrap) {
+                ex = ex.unwrap().cause;
+            }
+            ex = ex.message;
         }
-        loader.server.broadcast("\xA7cError loading " + lib + ":\n" + ex, "bukkit.broadcast.admin");
+        loader.server.broadcast("\xA7cError loading " + lib + ", " + ex, "bukkit.broadcast.admin");
     }
 }
 

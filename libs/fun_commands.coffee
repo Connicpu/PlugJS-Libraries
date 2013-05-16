@@ -127,11 +127,11 @@ registerCommand {
     usage: "\xA7eUsage: /<command> [-f] [players] <target>"
     permission: registerPermission("js.fun.teleport", "op", [
       permission: "js.fun.teleport.others"
-      value: true
+      value: on
     ])
     permissionMessage: "\xA7cNo can do, boss."
     aliases: [ "teleport" ]
-    flags: true
+    flags: on
   },
   (sender, label, args, flags) ->
     return false unless sender instanceof org.bukkit.entity.Player or args.length > 1
@@ -144,7 +144,9 @@ registerCommand {
         entity.sendMessage "\xA7eTeleported!"
         safeTeleport entity, location
 
-    players = if args.length > 1
+    players = if args.length == 2 and args[0] == '*'
+      _a loader.server.onlinePlayers
+    else if args.length > 1
       _p = []
       for i in [0..args.length - 2]
         player = gplr(args[i])
