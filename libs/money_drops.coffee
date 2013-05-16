@@ -23,9 +23,9 @@ money_drop_rates =
     chance: 0.9
 
   Enderman:
-  	base: 10
-  	variance: 0
-  	chance: 1
+    base: 10
+    variance: 0
+    chance: 1
 
 # Change this to what you want to appear on 
 # * the money as your treasury name. If you change
