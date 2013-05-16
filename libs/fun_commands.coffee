@@ -192,7 +192,7 @@ registerCommand {
     aliases: [ "pong" ]
   },
   (sender, label, args) ->
-    if label == "pong"
+    if label == "ping"
       sender.sendMessage "\xA7ePong!"
     else
       sender.sendMessage "\xA7eI hear #{sender.displayName}\xA7e likes cute asian boys"
