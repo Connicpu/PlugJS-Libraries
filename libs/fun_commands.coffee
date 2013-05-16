@@ -184,3 +184,15 @@ registerCommand {
     teleport player, target for player in players
 
     sender.sendMessage "\xA7ePlayer(s) teleported" unless players.indexOf(sender) != -1
+
+registerCommand {
+    name: "ping"
+    description: "A way to tell if the server is responding"
+    usage: "\xA7e/<command>"
+    aliases: [ "pong" ]
+  },
+  (sender, label, args) ->
+    if label == "pong"
+      sender.sendMessage "\xA7ePong!"
+    else
+      sender.sendMessage "\xA7eI hear #{sender.displayName}\xA7e likes cute asian boys"
