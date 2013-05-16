@@ -141,8 +141,8 @@ registerCommand {
         entity.teleport(location)
     else
       (entity, location) ->
-        entity.sendMessage "\xA7eTeleported!"
         safeTeleport entity, location
+        entity.sendMessage "\xA7eTeleported!"
 
     players = if args.length == 2 and args[0] == '*'
       _a loader.server.onlinePlayers

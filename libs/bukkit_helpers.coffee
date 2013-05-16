@@ -36,13 +36,15 @@ locationSafe = (location) ->
   location = location.clone().block.location
 
   firstYSweep = true
-  for y in [location.y..location.y+3]
-    for x in [location.x-1..location.x+1]
-      for z in [location.z-1..location.z+1]
+  for y in [location.y-1..location.y+1]
+    for x in [location.x-0..location.x+0]
+      for z in [location.z-0..location.z+0]
         info = new BlockInfo cloneLocation location,
           x: x
           y: y
           z: z
+          yaw: location.yaw
+          pitch: location.pitch
         return false if (info.solid and not firstYSweep) or info.dangerous
         firstYSweep = false
   true
