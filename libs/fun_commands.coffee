@@ -156,7 +156,6 @@ registerCommand {
       sender.sendMessage "\xA7cNone of the players listed were found"
       return
 
-    log args
     isCoords = (arg) ->
       split = arg.split(',')
       return false unless split.length == 3 or split.length == 4
