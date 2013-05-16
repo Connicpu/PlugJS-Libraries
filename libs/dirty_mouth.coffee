@@ -1,5 +1,5 @@
 replacers = [
-  [/fuck/i, 'frik']
+  [/fuck/i, 'mkay']
   [/\bass/i, 'bass']
   [/shit/i, 'shite']
   [/fag(g)?(ot|et)?/i, "bob saget"]
