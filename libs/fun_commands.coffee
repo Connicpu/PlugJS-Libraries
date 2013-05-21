@@ -179,6 +179,13 @@ registerCommand {
 
     sender.sendMessage "\xA7ePlayer(s) teleported" unless players.indexOf(sender) != -1
 
+registerPermission "js.fun.teleport.call", "true", [
+  permission: "js.fun.teleport", value: on
+]
+registerCommand
+  name: "bring",
+  description: "Go to and be brought by other players"
+
 registerCommand {
     name: "ping"
     description: "A way to tell if the server is responding"

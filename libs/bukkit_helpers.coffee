@@ -218,8 +218,8 @@ selectTarget = (arg, player) ->
     split = arg.split(',')
     return false unless split.length == 3 or split.length == 4
     for k in [0..2]
-      return false unless not isNaN split[k]
-    return true if not split[3] or loader.server.getWorld(split[3])
+      return false if isNaN split[k]
+    return true unless split[3] and not loader.server.getWorld(split[3])
     return false
   parseCoords = (arg) ->
     split = arg.split(',')
