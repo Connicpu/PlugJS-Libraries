@@ -1,5 +1,18 @@
+importPackage org.bukkit
 require 'minecraft_items.coffee'
+require 'time_helpers.coffee'
 
+checkTeleport = (player) ->
+  if player instanceof org.bukkit.entity.Player
+    event =
+      cancelled: false
+      player: player
+      cancelMessage: "Teleport Cancelled"
+    callEvent js, "teleport", event
+    throw event.cancelMessage if event.cancelled
+exactPlayer = (name) ->
+  return name if name instanceof org.bukkit.entity.Player
+  Bukkit.server.getPlayerExact name.replace /^@/, ''
 cloneLocation = (location, args) ->
   loc = location.clone()
   for k,v of args
@@ -49,9 +62,10 @@ locationSafe = (location) ->
         firstYSweep = false
   true
 getItemId = (value) ->
-  return value.id  if value instanceof org.bukkit.Material
-  return new Number(value)  unless isNaN(value)
-  return org.bukkit.Material[_s(value).toUpperCase()]  if enumContains(org.bukkit.Material, _s(value).toUpperCase())
+  return value.id if value instanceof org.bukkit.Material
+  return new Number(value) unless isNaN value
+  envalue = enumFind org.bukkit.Material, value
+  return envalue.id if envalue
   for item in minecraft_item_regexes
     return item[1] if item[0].test(value)
   return -1
@@ -72,6 +86,7 @@ BlockInfo = (block) ->
     block
   return
 safeTeleport = (entity, location) ->
+  checkTeleport entity
   location = suitableGround(location)
   throw "No safe location" if not location
   entity.teleport(location)
@@ -108,8 +123,124 @@ kill = (entity) ->
   else
     entity.remove()
 
+  true
+
 boolOnOff = (bool) ->
   if bool
     "\xA7aOn"
   else
     "\xA7cOff"
+
+String::toTitleCase = () ->
+  newstr = ""
+  firstLetter = true
+  for c in @
+    if /[ _\n]/.test c
+      newstr += ' '
+      firstLetter = true
+      continue
+
+    if firstLetter
+      newstr += c.toUpperCase()
+      firstLetter = false
+    else
+      newstr += c.toLowerCase()
+
+  newstr
+
+enumerate = (_enum) ->
+  for k,v of _enum
+    v if v instanceof _enum
+
+enumFind = (_enum, value) ->
+  value = _s(value).toUpperCase().replace /[_]/i, ''
+  for k,v of _enum
+    name = _s k
+    name = name.toUpperCase().replace /[_]/i, ''
+    if name == value
+      return v
+  undefined
+
+class ItemColor
+  dyes = ["black", "red", "green", "brown", "blue", "purple", "cyan", "lightgray", "gray", "pink", "lime", "yellow", "lightblue", "magenta", "orange", "white"]
+
+  constructor: (@value, mode) ->
+    switch _s(mode).toTitleCase()
+      when "Wool"
+        @value = ItemColor.fromWoolName @value
+      when "Ink Sack"
+        @value = ItemColor.fromDyeName @value
+      else
+        if isNaN @value
+          throw "Unknown data value"
+
+  woolName: () ->
+    dyes[15 - @value]
+  dyeName: () ->
+    dyes[@value]
+
+  @fromDyeName: (color) ->
+    index = dyes.indexOf color
+    if index == -1
+      throw "Unknown color" if isNaN color
+      index = color
+
+    return index
+  @fromWoolName: (color) ->
+    return 15 - @fromDyeName color
+
+  ItemColor::dyeValue = (color) ->
+    return new ItemColor(color, Material.INK_SACK).value
+  ItemColor::woolValue = (color) ->
+    return new ItemColor(color, Material.WOOL).value
+
+selectPlayers = (args, context) ->
+  for p in args
+    switch p
+      when '*'
+        return _a Bukkit.server.onlinePlayers
+      when '#near'
+        throw "Requires player context" if not context instanceof org.bukkit.Player
+        plrs = for p in Bukkit.server.onlinePlayers
+          p if p.location.distance(context.location) < 32
+        return plrs
+      when '#world'
+        throw "Requires player context" if not context instanceof org.bukkit.Player
+        plrs = for p in Bukkit.server.onlinePlayers
+          p if p.world == context.world
+        return plrs
+      
+    player = gplr p
+    player if player?
+
+selectTarget = (arg, player) ->
+  isCoords = (arg) ->
+    split = arg.split(',')
+    return false unless split.length == 3 or split.length == 4
+    for k in [0..2]
+      return false unless not isNaN split[k]
+    return true if not split[3] or loader.server.getWorld(split[3])
+    return false
+  parseCoords = (arg) ->
+    split = arg.split(',')
+    throw "Invalid coordinates" if not /^([\d]+),([\d]+),([\d]+)(,[a-z0-9_]+)?$/i.test arg;
+    cloneLocation getloc
+      x: split[0]
+      y: split[1]
+      z: split[2]
+      world: loader.server.getWorld(split[3]) || sender.world || players[0].world
+
+  switch arg
+    when '#spawn'
+      return player.world.spawnLocation
+    when '#near'
+      nearby = nearestEntity player, 'Player'
+      throw "No other players in your world!" if not nearby?
+      return nearby.location
+
+  return parseCoords arg if isCoords arg
+  return exactPlayer(arg).location if exactPlayer arg
+  return getWorld arg if getWorld arg
+  return gplr(arg).location if gplr arg
+  throw "Target not found!"
+

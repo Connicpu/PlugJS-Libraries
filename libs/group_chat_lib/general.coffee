@@ -22,7 +22,7 @@ formatInformation = (event, params) ->
     displayName: event.player.displayName
     player: event.player
   if params
-    for key,param in params
+    for key,param of params
       fmtEvent[key] = param
   callEvent js, "chatFormat", fmtEvent
   fmtEvent

@@ -12,7 +12,7 @@ registerEvent js, "extensions", (event) ->
     event.ext.lr = stack[0]
     event.ext.lrs = stack
 
-  for player in event.ext.pl
+  for player in _a loader.server.offlinePlayers
     event.ext[player.name] ||= player
 
 registerEvent js, "evalComplete", (event) ->
@@ -40,3 +40,6 @@ registerCommand {
     stack.threads = []
 
     sender.sendMessage "\xA7eThreads stopped"
+
+registerEvent player, "interact", (event) ->
+  

@@ -70,17 +70,28 @@ registerCommand {
       data = split[1]
       getItemId(split[0])
     else getItemId(args[1])
-    if itemId == -1
-      sender.sendMessage "\xA7cCan't find item '#{args[1]}'"
-      return
+    throw "Can't find item '#{args[1]}'" if itemId == -1
+
+    itemId = org.bukkit.Material.getMaterial itemId
+
+    data = new ItemColor(data, itemId).value
 
     amount = args[2] if args[2]
 
     item = itemStack(itemId, amount, data)
 
     player.inventory.addItem [ item ]
-    player.sendMessage "\xA7eYou were given #{amount}x#{item.type} by #{sender.name}"
-    sender.sendMessage "\xA7eGiving #{amount}x#{item.type} to #{player.name}"
+
+    amount = 'Infinite' if amount < 0
+
+    if itemId == itemId.WOOL
+      type = "#{new ItemColor(data).woolName} wool"
+    else if itemId == itemId.INK_SACK
+      type = "#{new ItemColor(data).dyeName} dye"
+    else
+      type = _s item.type
+    player.sendMessage "\xA7eYou were given #{amount} x #{type.toTitleCase()} by #{sender.displayName}"
+    sender.sendMessage "\xA7eGiving #{amount} x #{type.toTitleCase()} to #{player.displayName}"
 
 registerCommand {
     name: "item"
@@ -109,16 +120,26 @@ registerCommand {
       data = split[1]
       getItemId(split[0])
     else getItemId(args[0])
+    throw "Can't find item '#{args[0]}'" if itemId == -1
 
-    if itemId == -1
-      sender.sendMessage "\xA7cCan't find item '#{args[0].split(':')[0]}'"
-      return
+    itemId = Material['getMaterial(int)'] itemId
+
+    data = new ItemColor(data, itemId).value
 
     amount = args[1] if args[1]
 
     item = itemStack(itemId, amount, data)
     sender.inventory.addItem [ item ]
-    sender.sendMessage "\xA7eGiven #{amount} x #{item.type}"
+
+    amount = 'Infinite' if amount < 0
+
+    if item.type == item.type.WOOL
+      type = "#{new ItemColor(data).woolName()} wool"
+    else if item.type == item.type.INK_SACK
+      type = "#{new ItemColor(data).dyeName()} dye"
+    else
+      type = _s item.type
+    sender.sendMessage "\xA7eGiven #{amount} x #{type.toTitleCase()}"
 
 registerPermission "js.fun.teleport.others", "op"
 registerCommand {
@@ -144,43 +165,15 @@ registerCommand {
         safeTeleport entity, location
         entity.sendMessage "\xA7eTeleported!"
 
-    players = if args.length == 2 and args[0] == '*'
-      _a loader.server.onlinePlayers
-    else if args.length > 1
-      _p = []
-      for i in [0..args.length - 2]
-        player = gplr(args[i])
-        _p.push(player) if player
-      _p
+    players = if args.length > 1
+      selectPlayers args.slice(0, args.length - 1), sender
     else [ sender ]
 
     unless players.length
       sender.sendMessage "\xA7cNone of the players listed were found"
       return
 
-    isCoords = (arg) ->
-      split = arg.split(',')
-      return false unless split.length == 3 or split.length == 4
-      for k in [0..2]
-        return false unless not isNaN split[k]
-      return true if not split[3] or loader.server.getWorld(split[3])
-      return false
-    parseCoords = (arg) ->
-      split = arg.split(',')
-      cloneLocation getloc
-        x: split[0]
-        y: split[1]
-        z: split[2]
-        world: loader.server.getWorld(split[3]) || sender.world || players[0].world
-
-    target = args[args.length - 1]
-    target = if isCoords target
-      parseCoords target
-    else gplr(target).location
-
-    unless target
-      sender.sendMessage "\xA7cTarget not found!"
-      return
+    target = selectTarget args[args.length - 1], sender
 
     teleport player, target for player in players
 
@@ -197,3 +190,24 @@ registerCommand {
       sender.sendMessage "\xA7ePong!"
     else
       sender.sendMessage "\xA7eI hear #{sender.displayName}\xA7e likes cute asian boys"
+
+registerCommand
+  name: "setspawn",
+  description: "Sets the spawn",
+  usage: "\xA7e/<command>",
+  permission: registerPermission("js.fun.setspawn", "op"),
+  permissionMessage: "\xA7cNo can do boss",
+  aliases: [ "setworldspawn" ],
+  (sender, label, args) ->
+    throw "Only a player can do that" unless sender instanceof org.bukkit.entity.Player
+    sender.world.setSpawnLocation sender.location.x, sender.location.y, sender.location.z
+
+registerCommand
+  name: "spawn",
+  description: "Takes you to your world's spawn",
+  usage: "\xA7e/<command> [player ...]"
+  permission: registerPermission("js.fun.spawn", "true"),
+  permissionMessage: "\xA7cNo can do boss",
+  aliases: [ "tpspawn" ],
+  (sender, label, args) ->
+    safeTeleport sender, sender.world.spawnLocation

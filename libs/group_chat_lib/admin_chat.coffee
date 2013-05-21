@@ -26,8 +26,11 @@ registerCommand {
     unless args.length
       adminChatList[sender.name] = not adminChatList[sender.name]
       sender.sendMessage "\xA7bAdmin chat #{boolOnOff adminChatList[sender.name]}"
+      disablePartyChat sender if disablePartyChat
       return
 
-    disablePartyChat sender if disablePartyChat
-
     message = args.join(" ")
+    isAChat = adminChatList[sender.name]
+    adminChatList[sender.name] = true
+    sender.chat(message)
+    adminChatList[sender.name] = isAChat

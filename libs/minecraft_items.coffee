@@ -7,7 +7,7 @@ minecraft_item_regexes = [
   [/plank(s)?$/i, 5]
   [/^sap/i, 6]
   [/^bedrock$/i, 7]
-  [/^water$/i, 8]
+  [/^(still)?(.*)water$/i, 8]
   [/^(sta)?(.*)water$/i, 9]
   [/^lava$/i, 10]
   [/^(sta)?(.*)lava$/i, 11]
@@ -35,4 +35,6 @@ minecraft_item_regexes = [
   [/^piston$/i, 33]
 # [/^piston(.*)head$/i, 34]
   [/^wool$/i, 34]
+
+  [/^ink/i, 351]
 ]

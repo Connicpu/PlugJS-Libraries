@@ -8,6 +8,7 @@ libraries = [
     "eval_helpers.coffee",
     "tt_war_helpers.js",
     "async.js",
+    "geoip.coffee",
     "permissions.coffee",
     "econ.js",
     "metadata.js",
@@ -17,7 +18,8 @@ libraries = [
     "fun_commands.coffee",
     "dirty_mouth.coffee",
     "group_chats.coffee",
-    "chatcolors.coffee"
+    "chatcolors.coffee",
+    "noport.coffee"
 ];
 
 function log(msg, level) {
@@ -70,10 +72,10 @@ for (var i in libraries) {
     } catch(ex) {
         if (ex.rhinoException) {
             ex = ex.rhinoException;
-            while (ex.unwrap) {
+            while (ex && ex.unwrap) {
                 ex = ex.unwrap().cause;
             }
-            ex = ex.message;
+            ex = (ex || {message: "Unknown error"}).message;
         }
         loader.server.broadcast("\xA7cError loading " + lib + ", " + ex, "bukkit.broadcast.admin");
     }

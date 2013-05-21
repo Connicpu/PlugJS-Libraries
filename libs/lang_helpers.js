@@ -57,3 +57,6 @@ function listMembers(obj) {
     }
     return results;
 }
+function _n(num) {
+    return new Number(num) + 0
+}

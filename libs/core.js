@@ -1,13 +1,12 @@
 Object.prototype.toString = function(){try{return JSON.stringify(this, ' ', '\t').replace(/\t/g, "  ");}catch(e){return "[object Object]"}}
 Array.prototype.toString = function(){try{return JSON.stringify(this, ' ', '\t').replace(/\t/g, "  ");}catch(e){return "[object Array]"}}
 
-
 function combineArgs(label, args) {
     return "/" + label + " " + args.join(" ");
 }
 function getWorld(world) {
     if (typeof(world) != 'string') return world;
-    return loader.server.getWorld(world);
+    return loader.server.getWorld(_s(world).replace(/^[+]/i, ''));
 }
 function getloc(loc) {
     return new org.bukkit.Location(getWorld(loc.world),loc.x,loc.y,loc.z);
@@ -206,10 +205,12 @@ function loadCoffee(file) {
         }
     }
 
+    var timer = new Stopwatch();
     log("Compiling " + fileName, 'a');
-
     var javascript = CoffeeScript.compile(coffee, {bare: true});
-    save_file(cachePath, "/*" + coffeeMd5 + "*/\n" + javascript);
+    timer.stop();
+
+    save_file(cachePath, "/*" + coffeeMd5 + "*/\n/* Compiled in " + timer.seconds + " seconds */\n" + javascript);
     plugin.js.eval(javascript);
 }
 function require(lib) {

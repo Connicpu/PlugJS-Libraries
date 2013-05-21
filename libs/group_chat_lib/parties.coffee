@@ -4,60 +4,71 @@ parties.players ||= {}
 parties.groups ||= {}
 
 isInPartyChat = (player) ->
-  parties.players[player.name] and parties.groups[parties.players[player.name]]
+  parties.players[player.name] and Party.get player
 
 disablePartyChat = (player) ->
   parties.players[player.name] = undefined
 
 partyChat = (event) ->
-  party = parties.groups[parties.players[event.player.name]]
+  party = Party.get event.player
+
+  log party.displayName, 'b'
   
-  event.format = formatChat adminFormat, formatInformation event, { party: party.displayName }
+  event.format = formatChat partyFormat, formatInformation event, { party: party.displayName }
 
   for player in _a event.recipients
-    event.recipients.remove player if party.users.indexOf _s player.name == -1
+    if (i = party.users.indexOf _s player.name) == -1
+      log player
+      log i
+      event.recipients.remove player 
 
 listParties = (player) ->
-  for party in parties.groups
+  for k,party of parties.groups
     party unless (party.users.indexOf _s player.name) == -1
 
 isInParty = (player, name) ->
   name = name.toLowerCase()
-  parties = listParties player
-  for party in parties
+  for party in listParties player
     return true if party.name == name
   return false
 
-getParty = (name) -> parties.groups[name.toLowerCase()]
+class Party
+  constructor: (name, owner, @password, @inviteOnly, @membersInvite) ->
+    @name = name.toLowerCase()
+    @displayName = name
+    @owner = _s owner.name
+    @users = [ @owner ]
+    @invites = []
 
-Party = (name, owner, options) ->
-  @name = name.toLowerCase()
-  @displayName = name
-  @owner = _s owner.name
-  @users = [ @owner ]
-  @invites = []
-  @password = options.password
-  @inviteOnly = options.inviteOnly
-  @membersInvite = options.membersInvite
-  @hasInvite = (player) ->
+  hasInvite: (player) ->
     for invite in @invites
-      return true if recipient == _s player.name
-    return false
-  @removeInvite = (invite) ->
+      return true if invite.recipient == _s player.name
+    false
+
+  removeInvite: (invite) ->
     @invites.splice @invites.indexOf(invite), 1
 
-Party.Invite = (party, sender, recipient) ->
-  @party = party.name
-  @sender = _s sender.name
-  @recipient = _s recipient.name || recipient
+  @get: (name) ->
+    return undefined if not name
 
-registerCommand {
-    name: "party"
-    description: "Party commands"
-    usage: "\xA7e/<command> <partyname|off|join|create|leave|delete>"
-    aliases: [ "p" ]
-  },
-  (sender, label, args) ->
+    if name instanceof org.bukkit.entity.Player
+      Party.get parties.players[name.name]
+    else
+      parties.groups[name.toLowerCase()]
+
+  class Invite
+    constructor: (party, sender, recipient) ->
+      @party = party.name
+      @sender = _s sender.name
+      @recipient = _s recipient.name || recipient
+
+registerCommand
+  name: "party",
+  description: "Party commands",
+  usage: "\xA7e/<command> <partyname|off|join|create|leave|delete>",
+  aliases: [ "p" ],
+  flags: on,
+  (sender, label, args, flags) ->
     unless args[0]
       myParties = listParties sender
 
@@ -67,23 +78,24 @@ registerCommand {
 
       writeParty = (party) ->
         whiteSpace = ""
-        for i in [1..16 - party.length]
+        for i in [1..16 - party.name.length]
           whiteSpace += ' '
-        sender.sendMessage "\xA7a- #{party.name}#{whiteSpace} -"
+        sender.sendMessage "\xA7a- #{party.name}"
 
-      sender.sendMessage "\xA7a--------------------"
-      sender.sendMessage "\xA7a-   My parties     -"
-      sender.sendMessage "\xA7a--------------------"
+      sender.sendMessage "\xA7a-- My parties --"
       for party in myParties
         writeParty party
-      sender.sendMessage "\xA7a--------------------"
 
-      return false
+      sender.sendMessage "\xA7eYou are talking in #{Party.get(sender).displayName}" if Party.get sender
+
+      return
     switch args[0]
+      when "help"
+        return false
       when "join"
         unless args.length == 2
           sender.sendMessage "\xA7eUsage: /party join [party name]"
-        party = getParty args[1]
+        party = Party.get args[1]
         unless party
           sender.sendMessage "\xA7cParty '#{args[1]}' not found"
           return
@@ -106,7 +118,15 @@ registerCommand {
         disableAdminChat if disableAdminChat
         sender.sendMessage "\xA7aYou are now talking in #{party.displayName}"
       when "create"
-        ''
+        if args.length < 2
+          sender.sendMessage "\xA7e/party create <name> [-i] [-m] [password]"
+          return
+        if Party.get args[1]
+          sender.sendMessage "\xA7cA party with that name already exists"
+          return
+
+        party = new Party args[1], sender, args[2], flags.indexOf('i') != -1, flags.indexOf('m') != -1
+        sender.sendMessage "\xA7a=> #{party}"
       when "off"
         parties.players[sender.name] = undefined
         sender.sendMessage "\xA7eNow talking in global chat"
@@ -114,7 +134,9 @@ registerCommand {
         ''
       else
         if isInParty sender, args[0]
-          party = parties.players[sender.name] = getParty(args[0]).name
+          disableAdminChat sender if disableAdminChat
+          party = Party.get(args[0])
+          parties.players[sender.name] = party.name
           sender.sendMessage "\xA7aYou are now talking in #{party.displayName}"
         else
           sender.sendMessage "\xA7cYou aren't in that party, type /party to list the parties you are in"

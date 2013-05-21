@@ -297,7 +297,7 @@ registerEvent(entity, "death", function(event) {
     for (var i in money_drop_rates) {
         var rate = money_drop_rates[i];
         if (event.entity instanceof org.bukkit.entity[i]) {
-            if (Math.random() > rate.chance) return;
+            if (Math.random() > rate.chance/100) continue;
             var amount = rate.base;
             var modifier = (Math.random() - 0.5)*(rate.variance * 2) + 0.5;
             
