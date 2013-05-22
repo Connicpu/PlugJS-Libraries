@@ -1,18 +1,26 @@
 evalResultStack = registerHash "evalResultStack"
+blazeRodStack = registerHash "blazeRodStack"
 
 registerEvent js, "extensions", (event) ->
   event.ext.p = event.sender
   event.ext.loc = event.sender.location
   event.ext.i = event.sender.itemInHand
   event.ext.world = event.sender.world
-  event.ext.pl = _a loader.server.onlinePlayers
+  event.ext.pl = _a Bukkit.server.onlinePlayers
   event.ext.en = org.bukkit.entity;
+
   if evalResultStack[event.sender.name]
     stack = evalResultStack[event.sender.name]
     event.ext.lr = stack[0]
     event.ext.lrs = stack
 
-  for player in _a loader.server.offlinePlayers
+  if blazeRodStack[event.sender.name]
+    event.ext.br = blazeRodStack[event.sender.name]
+
+  for world in _a Bukkit.server.worlds
+    event.ext[world.name] ||= world
+
+  for player in _a Bukkit.server.offlinePlayers
     event.ext[player.name] ||= player
 
 registerEvent js, "evalComplete", (event) ->
@@ -42,4 +50,9 @@ registerCommand {
     sender.sendMessage "\xA7eThreads stopped"
 
 registerEvent player, "interact", (event) ->
-  
+  return unless event.action == event.action.RIGHT_CLICK_BLOCK
+  return unless event.item.type == Material.BLAZE_ROD
+  event.cancelled = true
+  br = blazeRodStack[event.player.name] = event.clickedBlock
+  event.player.sendMessage "\xA7a=> #{br.type}, data=#{br.data}, x=#{br.x}, y=#{br.y}, z=#{br.z}"
+  event.player.sendMessage "\xA7aClicked the #{event.blockFace.toString().toLowerCase()} side"

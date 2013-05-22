@@ -36,5 +36,7 @@ minecraft_item_regexes = [
 # [/^piston(.*)head$/i, 34]
   [/^wool$/i, 34]
 
+  [/^redstone(_)?lamp$/i, 123]
+
   [/^ink/i, 351]
 ]

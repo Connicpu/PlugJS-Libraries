@@ -19,7 +19,8 @@ libraries = [
     "dirty_mouth.coffee",
     "group_chats.coffee",
     "chatcolors.coffee",
-    "noport.coffee"
+    "noport.coffee",
+    "safety_first.coffee"
 ];
 
 function log(msg, level) {

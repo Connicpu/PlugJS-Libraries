@@ -1,9 +1,22 @@
 class TimeSpan
   constructor: (@value, @datatype) ->
-    if @value.value
+    unless @value
+      @value = 0
+      @datatype = 'milliseconds'
+    else if @value.value
       @datatype = @value.datatype
       @value = @value.value
     else @datatype ||= 'milliseconds'
+
+  class TimeSpanOfConverter
+    constructor: (@span) ->
+    @prop 'time', get: () -> @span.to_milliseconds.value
+    @prop 'ticks', get: () -> @span.to_ticks.value
+    @prop 'seconds', get: () -> @span.to_seconds.value
+    @prop 'minutes', get: () -> @span.to_minutes.value
+    @prop 'hours', get: () -> @span.to_hours.value
+    @prop 'days', get: () -> @span.to_days.value
+    @prop 'weeks', get: () -> @span.to_weeks.value
 
   @prop 'to_milliseconds',
     get: () ->
@@ -22,8 +35,11 @@ class TimeSpan
   @prop 'to_hours', get: () -> new TimeSpan @to_minutes.value / 60, 'hours'
   @prop 'to_days', get: () -> new TimeSpan @to_hours.value / 24, 'days'
   @prop 'to_weeks', get: () -> new TimeSpan @to_days.value / 7, 'weeks'
-  @prop 'ago', get: () -> @to_milliseconds.value
-
+  @prop 'ago', get: () -> new java.util.Date().time - @to_milliseconds.value
+  @prop 'from_now', get: () -> new java.util.Date().time + @to_milliseconds.value
+  @prop 'of', get: () -> new TimeSpanOfConverter @
+  @prop 'now', get: () -> 0.ticks.from_now
+  
   TimeSpan::toString = () ->
     type = @datatype
     type = type.replace /s$/, '' if @value.to_n == 1

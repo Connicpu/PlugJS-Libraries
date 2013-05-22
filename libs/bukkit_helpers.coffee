@@ -1,6 +1,7 @@
 importPackage org.bukkit
 require 'minecraft_items.coffee'
 require 'time_helpers.coffee'
+require 'bukkit_safety_checks.coffee'
 
 checkTeleport = (player) ->
   if player instanceof org.bukkit.entity.Player
@@ -13,54 +14,7 @@ checkTeleport = (player) ->
 exactPlayer = (name) ->
   return name if name instanceof org.bukkit.entity.Player
   Bukkit.server.getPlayerExact name.replace /^@/, ''
-cloneLocation = (location, args) ->
-  loc = location.clone()
-  for k,v of args
-    loc[k] = v if v?
-  return loc
-suitableGround = (_location) ->
-  distances = []
-  checkDirection = (location, property, direction, radius) ->
-    i = location[property]
 
-    for i in [location[property]..location[property] + radius*direction]
-      loc = location.clone()
-      loc[property] = i
-      if locationSafe(loc)
-        distances.push
-          distance: location.distance(loc)
-          location: loc
-        break
-
-  checkDirection _location, "x",  1,  5
-  checkDirection _location, "x", -1,  5
-  checkDirection _location, "y",  1, 20
-  checkDirection _location, "y", -1,  5
-  checkDirection _location, "z",  1,  5
-  checkDirection _location, "z", -1,  5
-
-  return false if distances.length < 1
-
-  distances.sort (a, b) ->
-    a.distance - b.distance
-
-  distances[0].location
-locationSafe = (location) ->
-  location = location.clone().block.location
-
-  firstYSweep = true
-  for y in [location.y-1..location.y+1]
-    for x in [location.x-0..location.x+0]
-      for z in [location.z-0..location.z+0]
-        info = new BlockInfo cloneLocation location,
-          x: x
-          y: y
-          z: z
-          yaw: location.yaw
-          pitch: location.pitch
-        return false if (info.solid and not firstYSweep) or info.dangerous
-        firstYSweep = false
-  true
 getItemId = (value) ->
   return value.id if value instanceof org.bukkit.Material
   return new Number(value) unless isNaN value
@@ -87,9 +41,9 @@ BlockInfo = (block) ->
   return
 safeTeleport = (entity, location) ->
   checkTeleport entity
-  location = suitableGround(location)
+  location = GroundFinder::suitableGround location
   throw "No safe location" if not location
-  entity.teleport(location)
+  entity.teleport location
 nearestEntity = (searchEntity, type) ->
   searchL = if searchEntity instanceof org.bukkit.Location
     searchEntity
@@ -134,7 +88,7 @@ boolOnOff = (bool) ->
 String::toTitleCase = () ->
   newstr = ""
   firstLetter = true
-  for c in @
+  for c in _s @
     if /[ _\n]/.test c
       newstr += ' '
       firstLetter = true
@@ -147,6 +101,8 @@ String::toTitleCase = () ->
       newstr += c.toLowerCase()
 
   newstr
+
+String.prop 'titleCase', get: () -> @toTitleCase()
 
 enumerate = (_enum) ->
   for k,v of _enum
@@ -240,7 +196,7 @@ selectTarget = (arg, player) ->
 
   return parseCoords arg if isCoords arg
   return exactPlayer(arg).location if exactPlayer arg
-  return getWorld arg if getWorld arg
+  return getWorld(arg).spawnLocation if getWorld arg
   return gplr(arg).location if gplr arg
   throw "Target not found!"
 
