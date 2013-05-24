@@ -2,6 +2,7 @@ importPackage org.bukkit
 require 'minecraft_items.coffee'
 require 'time_helpers.coffee'
 require 'bukkit_safety_checks.coffee'
+require 'action_queue.coffee'
 
 checkTeleport = (player) ->
   if player instanceof org.bukkit.entity.Player

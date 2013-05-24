@@ -1,17 +1,8 @@
 libraries = [
-    "js_persistence.js",
-    "lang_helpers.js",
-    "core.js",
-    "async.js",
-    "coffee-script.js",
     "bukkit_helpers.coffee",
     "eval_helpers.coffee",
-    "tt_war_helpers.js",
-    "async.js",
     "geoip.coffee",
     "permissions.coffee",
-    "econ.js",
-    "metadata.js",
     "money_drops.coffee",
     "fireworks.js",
     "enchants.js",
@@ -60,15 +51,14 @@ var spout = {
     slot: {},
     key: {}
 };
-
 var CoffeeScript;
-for (var i in libraries) {
-    var lib = libraries[i];
+function loadLib(lib, mode) {
+    mode = mode || "core"
     try {
         if (CoffeeScript && /\.coffee/i.test(lib)) {
-            loadCoffee("./plugins/PlugJS/libs/" + lib);
+            loadCoffee("./plugins/PlugJS/"+mode+"/" + lib);
         } else {
-            load("./plugins/PlugJS/libs/" + lib);
+            load("./plugins/PlugJS/"+mode+"/" + lib);
         }
     } catch(ex) {
         if (ex.rhinoException) {
@@ -80,6 +70,19 @@ for (var i in libraries) {
         }
         loader.server.broadcast("\xA7cError loading " + lib + ", " + ex, "bukkit.broadcast.admin");
     }
+}
+
+loadLib("js_persistence.js");
+loadLib("lang_helpers.js");
+loadLib("core.js");
+loadLib("async.js");
+loadLib("tt_war_helpers.js");
+loadLib("coffee-script.js");
+loadLib("econ.js");
+loadLib("metadata.js");
+
+for (var i in libraries) {
+    loadLib(libraries[i], "libs");
 }
 
 /* List of events by group
