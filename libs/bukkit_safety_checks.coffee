@@ -23,12 +23,13 @@ class GroundFinder
       ]
       dists.sort (a, b) -> a - b
       return dists[0]
-    @prop 'hashCode', get: () -> "#{location.block.x},#{location.block.y},#{location.block.z}"
+    @prop 'hashCode', get: () -> "#{@location.block.x},#{@location.block.y},#{@location.block.z}"
 
   GroundFinder::suitableGround = (location) ->
-
-
     distances = []
+
+    cacheItem = closeCacheItem location, 2
+    return cacheItem.safeSpot if cacheItem
 
     for y in [location.y - 3 .. location.y + 5]
       for x in [location.x - 2 .. location.x + 2]
@@ -37,7 +38,7 @@ class GroundFinder
             x: x
             y: y
             z: z
-          if locationSafe loc
+          if GroundFinder::locationSafe loc
             distances.push
               distance: loc.distance location
               location: loc
@@ -47,7 +48,9 @@ class GroundFinder
     distances.sort (a, b) ->
       a.distance - b.distance
 
-    distances[0].location
+    cacheItem = new CacheItem location, distances[0].location
+    safeSpotCache[cacheItem.hashCode] = cacheItem
+    return distances[0].location
   GroundFinder::locationSafe = (location) ->
     location = location.clone().block.location
 
@@ -78,4 +81,14 @@ class GroundFinder
     false
 
   registerEvent block, "place", (event) ->
-    
+    for item in closeCacheItems event.player.location, 10
+      safeSpotCache.splice safeSpotCache.indexOf(item), 1
+  registerEvent block, "bbreak", (event) ->
+    for item in closeCacheItems event.player.location, 10
+      safeSpotCache.splice safeSpotCache.indexOf(item), 1
+
+safeTeleport = (entity, location) ->
+  checkTeleport entity
+  location = GroundFinder::suitableGround location
+  throw "No safe location" if not location
+  entity.teleport location

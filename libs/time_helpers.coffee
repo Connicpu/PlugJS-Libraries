@@ -43,7 +43,7 @@ class TimeSpan
   TimeSpan::toString = () ->
     type = @datatype
     type = type.replace /s$/, '' if @value.to_n == 1
-    "#{@value} #{type}"
+    "#{Math.round @value} #{type}"
   TimeSpan::toJSON = () -> value: @value, datatype: @datatype
 
 Number.prop 'milliseconds', get: () -> new TimeSpan @, 'milliseconds'

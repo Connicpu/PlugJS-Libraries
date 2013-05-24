@@ -40,11 +40,6 @@ BlockInfo = (block) ->
   @getBlock = ->
     block
   return
-safeTeleport = (entity, location) ->
-  checkTeleport entity
-  location = GroundFinder::suitableGround location
-  throw "No safe location" if not location
-  entity.teleport location
 nearestEntity = (searchEntity, type) ->
   searchL = if searchEntity instanceof org.bukkit.Location
     searchEntity
@@ -185,7 +180,7 @@ selectTarget = (arg, player) ->
       x: split[0]
       y: split[1]
       z: split[2]
-      world: loader.server.getWorld(split[3]) || sender.world || players[0].world
+      world: loader.server.getWorld(split[3]) || player.world || players[0].world
 
   switch arg
     when '#spawn'
@@ -201,3 +196,11 @@ selectTarget = (arg, player) ->
   return gplr(arg).location if gplr arg
   throw "Target not found!"
 
+heightAboveGround = (entity) ->
+  loc = entity.location
+  while loc.y > 0
+    --loc.y
+    return entity.location.y - loc.y if new BlockInfo(loc.block).solid
+  entity.location.y
+
+require 'spout_helpers.coffee' if getPlugin "Spout"

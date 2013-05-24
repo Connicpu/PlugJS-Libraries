@@ -184,7 +184,10 @@ registerPermission "js.fun.teleport.call", "true", [
 ]
 registerCommand
   name: "bring",
-  description: "Go to and be brought by other players"
+  description: "Go to and be brought by other players",
+  aliases: [ "call" ],
+  (sender, label, args) ->
+    
 
 registerCommand {
     name: "ping"

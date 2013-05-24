@@ -11,7 +11,8 @@ libraries = [
     "group_chats.coffee",
     "chatcolors.coffee",
     "noport.coffee",
-    "safety_first.coffee"
+    "safety_first.coffee",
+    "bye_have_a_great_time.coffee"
 ];
 
 function log(msg, level) {
