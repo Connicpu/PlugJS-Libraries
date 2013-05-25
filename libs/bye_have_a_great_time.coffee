@@ -8,8 +8,14 @@ class bye_have_a_great_time
       return
 
     return if recentlyPlayed[event.player.name]
-    return unless event.player.velocity.y < -0.5
-    return unless heightAboveGround(event.player) > 6
+    return unless event.player.velocity.y < -0.3
+    return unless heightAboveGround(event.player) > 10
 
     recentlyPlayed[event.player.name] = yes
     sound.playFor event.player
+
+#class its_only_a_game_why_you_heff_to_be_mad
+#  sound = new CustomSoundEffect "https://dl.dropboxusercontent.com/u/47432776/spout/sound/is_only_a_game_why_you_heff_to_be_mad.ogg"
+#
+#  registerEvent player, "death", (event) ->
+#    sound.playFor event.entity

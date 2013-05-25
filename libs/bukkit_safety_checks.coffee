@@ -48,6 +48,9 @@ class GroundFinder
     distances.sort (a, b) ->
       a.distance - b.distance
 
+    distances[0].location.x += 0.5;
+    distances[0].location.z += 0.5;
+
     cacheItem = new CacheItem location, distances[0].location
     safeSpotCache[cacheItem.hashCode] = cacheItem
     return distances[0].location

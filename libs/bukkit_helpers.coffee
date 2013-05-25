@@ -1,4 +1,5 @@
 importPackage org.bukkit
+require 'classload_helpers.coffee'
 require 'minecraft_items.coffee'
 require 'time_helpers.coffee'
 require 'bukkit_safety_checks.coffee'
@@ -175,7 +176,7 @@ selectTarget = (arg, player) ->
     return false
   parseCoords = (arg) ->
     split = arg.split(',')
-    throw "Invalid coordinates" if not /^([\d]+),([\d]+),([\d]+)(,[a-z0-9_]+)?$/i.test arg;
+    throw "Invalid coordinates" if not /^((\-)?[\d]+),((\-)?[\d]+),((\-)?[\d]+)(,[a-z0-9_]+)?$/i.test arg;
     cloneLocation getloc
       x: split[0]
       y: split[1]
