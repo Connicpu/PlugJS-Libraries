@@ -2,7 +2,7 @@ class bye_have_a_great_time
   sound = new CustomSoundEffect "https://dl.dropboxusercontent.com/u/47432776/spout/sound/bye_have_a_great_time.ogg"
   recentlyPlayed = {}
 
-  @prop 'sound', get: () -> sound
+  @sound = sound
 
   registerEvent player, 'move', (event) ->
     if recentlyPlayed[event.player.name] and event.player.velocity.y > -0.1
