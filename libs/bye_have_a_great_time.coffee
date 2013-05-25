@@ -13,6 +13,9 @@ class bye_have_a_great_time
 
     recentlyPlayed[event.player.name] = yes
     sound.playFor event.player
+    for p in _a Bukkit.server.onlinePlayers
+      continue if p == event.player
+      sound.playFor p, event.player.location, 100
 
 #class its_only_a_game_why_you_heff_to_be_mad
 #  sound = new CustomSoundEffect "https://dl.dropboxusercontent.com/u/47432776/spout/sound/is_only_a_game_why_you_heff_to_be_mad.ogg"

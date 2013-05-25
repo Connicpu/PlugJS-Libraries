@@ -210,4 +210,10 @@ heightAboveGround = (entity) ->
 
   entity.location.y
 
+createItemMeta = (baseType, func) ->
+  stack = itemStack(baseType, 1)
+  meta = stack.itemMeta
+  func(meta)
+  meta
+
 require 'spout_helpers.coffee' if getPlugin "Spout"

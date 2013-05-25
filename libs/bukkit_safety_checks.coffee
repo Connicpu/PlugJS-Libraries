@@ -85,10 +85,12 @@ class GroundFinder
 
   registerEvent block, "place", (event) ->
     for item in closeCacheItems event.player.location, 10
-      safeSpotCache.splice safeSpotCache.indexOf(item), 1
+      continue unless item?
+      safeSpotCache[item.hashCode] = undefined
   registerEvent block, "bbreak", (event) ->
     for item in closeCacheItems event.player.location, 10
-      safeSpotCache.splice safeSpotCache.indexOf(item), 1
+      continue unless item?
+      safeSpotCache[item.hashCode] = undefined
 
 safeTeleport = (entity, location) ->
   checkTeleport entity
