@@ -1,58 +1,68 @@
-evalResultStack = registerHash "evalResultStack"
-blazeRodStack = registerHash "blazeRodStack"
+class eval_helpers
 
-registerEvent js, "extensions", (event) ->
-  event.ext.p = event.sender
-  event.ext.loc = event.sender.location
-  event.ext.i = event.sender.itemInHand
-  event.ext.world = event.sender.world
-  event.ext.pl = _a Bukkit.server.onlinePlayers
-  event.ext.en = org.bukkit.entity;
+  evalResultStack = registerHash "evalResultStack"
+  blazeRodStack = registerHash "blazeRodStack"
 
-  if evalResultStack[event.sender.name]
-    stack = evalResultStack[event.sender.name]
-    event.ext.lr = stack[0]
-    event.ext.lrs = stack
+  registerEvent js, "extensions", (event) ->
+    event.ext.p = event.sender
+    event.ext.loc = event.sender.location
+    event.ext.i = event.sender.itemInHand
+    event.ext.world = event.sender.world
+    event.ext.pl = _a Bukkit.server.onlinePlayers
+    event.ext.en = org.bukkit.entity;
 
-  if blazeRodStack[event.sender.name]
-    event.ext.br = blazeRodStack[event.sender.name]
+    if evalResultStack[event.sender.name]
+      stack = evalResultStack[event.sender.name]
+      event.ext.lr = stack[0]
+      event.ext.lrs = stack
 
-  for world in _a Bukkit.server.worlds
-    event.ext[world.name] ||= world
+    if blazeRodStack[event.sender.name]
+      event.ext.br = blazeRodStack[event.sender.name]
 
-  for player in _a Bukkit.server.offlinePlayers
-    event.ext[player.name] ||= player
+    for world in _a Bukkit.server.worlds
+      event.ext[world.name] ||= world
 
-registerEvent js, "evalComplete", (event) ->
-  stack = evalResultStack[event.sender.name] ||= []
-  stack.threads ||= []
+    for player in _a Bukkit.server.offlinePlayers
+      event.ext[player.name] ||= player
 
-  return unless event.result?
+  registerEvent js, "evalComplete", (event) ->
+    stack = evalResultStack[event.sender.name] ||= []
+    stack.threads ||= []
 
-  stack.splice 0, 0, event.result
-  stack.threads.splice 0, 0, event.result if event.result instanceof java.lang.Thread
+    return unless event.result?
 
-registerCommand {
-    name: "stopJsThreads"
-    description: "Stops all the threads you've started with js/cf"
-    usage: "\xA7e/<command>"
-    permission: "js.eval"
-    permissionMessage: "\xA7cNo can do, boss!"
-  },
-  (sender, label, args) ->
-    unless (stack = evalResultStack[sender.name]) and stack.threads and stack.threads.length
-      sender.sendMessage "\xA7eNo threads stored"
-      return
+    stack.splice 0, 0, event.result
+    stack.threads.splice 0, 0, event.result if event.result instanceof java.lang.Thread
 
-    thread.stop() for thread in stack.threads
-    stack.threads = []
+  registerCommand {
+      name: "stopJsThreads"
+      description: "Stops all the threads you've started with js/cf"
+      usage: "\xA7e/<command>"
+      permission: "js.eval"
+      permissionMessage: "\xA7cNo can do, boss!"
+    },
+    (sender, label, args) ->
+      unless (stack = evalResultStack[sender.name]) and stack.threads and stack.threads.length
+        sender.sendMessage "\xA7eNo threads stored"
+        return
 
-    sender.sendMessage "\xA7eThreads stopped"
+      thread.stop() for thread in stack.threads
+      stack.threads = []
 
-registerEvent player, "interact", (event) ->
-  return unless event.action == event.action.RIGHT_CLICK_BLOCK
-  return unless event.item.type == Material.BLAZE_ROD
-  event.cancelled = true
-  br = blazeRodStack[event.player.name] = event.clickedBlock
-  event.player.sendMessage "\xA7a=> #{br.type}, data=#{br.data}, x=#{br.x}, y=#{br.y}, z=#{br.z}"
-  event.player.sendMessage "\xA7aClicked the #{event.blockFace.toString().toLowerCase()} side"
+      sender.sendMessage "\xA7eThreads stopped"
+
+  registerEvent player, "interact", (event) ->
+    return unless event.action == event.action.RIGHT_CLICK_BLOCK
+    return unless event.item.type == Material.BLAZE_ROD
+    return if event.clickedBlock.equals blazeRodStack[event.player.name]
+    event.cancelled = yes
+    br = blazeRodStack[event.player.name] = event.clickedBlock
+    event.player.sendMessage "\xA7a=> #{br.type}, data=#{br.data}, x=#{br.x}, y=#{br.y}, z=#{br.z}"
+    event.player.sendMessage "\xA7aClicked the #{event.blockFace.toString().toLowerCase()} side"
+
+  registerEvent player, "interactEntity", (event) ->
+    return unless event.player.itemInHand.type == Material.BLAZE_ROD
+    return if blazeRodStack[event.player.name] == event.rightClicked
+    event.cancelled = yes
+    br = blazeRodStack[event.player.name] = event.rightClicked
+    event.player.sendMessage "\xA7a=> #{br}"

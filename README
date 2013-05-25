@@ -1,3 +1,7 @@
 A series of script files you can use with PlugJS for a scripted server experience you can edit on the fly
 
 Download the plugin here https://bintray.com/version/show/files/connorcpu/PlugJS/PlugJS/1.0
+
+Afterwards, place all of the files in this repo into ./plugins/PlugJS
+
+At the moment, the chat services are only configured to work with permissionsex, more plugins will be supported soon

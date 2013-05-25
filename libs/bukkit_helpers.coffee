@@ -32,15 +32,15 @@ itemStack = (id, amount, data, meta) ->
   item.durability = data  if data
   item.itemMeta = meta  if meta
   return item
-BlockInfo = (block) ->
-  block = block.block if block instanceof org.bukkit.Location
-  @id = new Number(block.typeId)
-  @data = new Number(block.data)
-  @solid = block.type.solid
-  @dangerous = arrayContains([8, 9, 10, 11, 30, 81], @id)
-  @getBlock = ->
-    block
-  return
+class BlockInfo
+  dangerousItems = [8, 9, 10, 11, 30, 81]
+  constructor: (block) ->
+    block = block.block if block instanceof org.bukkit.Location
+    @id = new Number(block.typeId)
+    @data = new Number(block.data)
+    @solid = block.type.solid
+    @dangerous = arrayContains dangerousItems, @id
+    @getBlock = () -> block
 nearestEntity = (searchEntity, type) ->
   searchL = if searchEntity instanceof org.bukkit.Location
     searchEntity

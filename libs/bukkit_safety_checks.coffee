@@ -8,10 +8,12 @@ class GroundFinder
   safeSpotCache = registerHash "safeSpotCache"
   closeCacheItem = (location, distance) ->
     for k,v of safeSpotCache
+      continue unless v?
       return v if v.distance(location) < distance
     null
   closeCacheItems = (location, distance) ->
     for k,v of safeSpotCache
+      continue unless v?
       v if v.distance(location) < distance
 
   class CacheItem
@@ -68,6 +70,7 @@ class GroundFinder
     for y in [location.y-1..location.y+1]
       for x in [location.x-0..location.x+0]
         for z in [location.z-0..location.z+0]
+          continue if y > 255
           info = new BlockInfo cloneLocation location,
             x: x
             y: y
