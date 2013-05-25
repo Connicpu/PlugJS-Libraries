@@ -5,3 +5,5 @@ Download the plugin here https://bintray.com/version/show/files/connorcpu/PlugJS
 Afterwards, place all of the files in this repo into ./plugins/PlugJS
 
 At the moment, the chat services are only configured to work with permissionsex, more plugins will be supported soon
+
+If you want to add or remove script files, update the "libraries" array at the top of plugin.js
