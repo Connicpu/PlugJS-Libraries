@@ -201,7 +201,13 @@ heightAboveGround = (entity) ->
   loc = entity.location
   while loc.y > 0
     --loc.y
-    return entity.location.y - loc.y if new BlockInfo(loc.block).solid
+    for x in [loc.x - 0.5 .. loc.x + 0.5]
+      for z in [loc.z - 0.5 .. loc.z + 0.5]
+        info = new BlockInfo cloneLocation loc,
+          x: x
+          z: z
+        return entity.location.y - loc.y if info.solid
+
   entity.location.y
 
 require 'spout_helpers.coffee' if getPlugin "Spout"

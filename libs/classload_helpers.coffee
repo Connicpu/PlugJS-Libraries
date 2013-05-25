@@ -4,3 +4,4 @@ loadClass = (classPath) ->
     constructor: () ->
       constructors = classInfo.constructors
       throw "No known constructors" if constructors.length == 0
+      
