@@ -22,8 +22,3 @@ class bye_have_a_great_time
   registerEvent player, 'quit', (event) ->
     sound.play()
 
-#class its_only_a_game_why_you_heff_to_be_mad
-#  sound = new CustomSoundEffect "https://dl.dropboxusercontent.com/u/47432776/spout/sound/is_only_a_game_why_you_heff_to_be_mad.ogg"
-#
-#  registerEvent player, "death", (event) ->
-#    sound.playFor event.entity
