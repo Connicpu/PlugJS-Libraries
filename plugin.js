@@ -1,11 +1,10 @@
 libraries = [
+    "fireworks.js",
+    "enchants.js",
     "bukkit_helpers.coffee",
     "eval_helpers.coffee",
     "geoip.coffee",
-    "permissions.coffee",
     "money_drops.coffee",
-    "fireworks.js",
-    "enchants.js",
     "fun_commands.coffee",
     "dirty_mouth.coffee",
     "group_chats.coffee",

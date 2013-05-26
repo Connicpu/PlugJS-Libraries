@@ -1,4 +1,5 @@
 class bye_have_a_great_time
+  throw "SpoutPlugin not found!" unless 'Spout'.plugin?
   sound = new CustomSoundEffect "https://dl.dropboxusercontent.com/u/47432776/spout/sound/bye_have_a_great_time.ogg"
   recentlyPlayed = {}
 

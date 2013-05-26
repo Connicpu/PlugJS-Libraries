@@ -27,3 +27,9 @@ registerEvent player, "chat", (event) ->
   message = message.replace /\&(?=[l-o])/gi, '\xA7' if event.player.hasPermission "js.chat.effects"
 
   event.message = message
+
+registerEvent js, "chatFormat", (event) ->
+  playerInfo = Permissions::getPlayer(event.player)
+  event.prefix = playerInfo.prefix
+  event.suffix = playerInfo.suffix
+  event.clantag = playerInfo.getInfo('clantag').string

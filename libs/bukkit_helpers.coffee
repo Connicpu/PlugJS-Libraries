@@ -1,5 +1,6 @@
 importPackage org.bukkit
 require 'classload_helpers.coffee'
+require 'permissions.coffee'
 require 'minecraft_items.coffee'
 require 'time_helpers.coffee'
 require 'bukkit_safety_checks.coffee'

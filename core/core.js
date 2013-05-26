@@ -261,6 +261,7 @@ function toggleCfEcho() {
     } else {
         evalEchoPlrs.push(_s(currEvalPlr.name));
     }
+    JsPersistence.save()
 }
 
 var plugin = getPlugin();

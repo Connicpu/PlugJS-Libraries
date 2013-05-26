@@ -1,3 +1,5 @@
+max_owned_parties = 5
+
 parties = JsPersistence.tryGet "chat_parties", {}
 
 parties.players ||= {}
@@ -48,6 +50,13 @@ class Party
   removeInvite: (invite) ->
     @invites.splice @invites.indexOf(invite), 1
 
+  @ownedBy: (player) ->
+    player = player.name if player instanceof org.bukkit.entity.Player
+    player = _s player
+
+    for name,party of parties.groups
+      party if party.owner is player
+
   @get: (name) ->
     return undefined if not name
 
@@ -65,7 +74,7 @@ class Party
 registerCommand
   name: "party",
   description: "Party commands",
-  usage: "\xA7e/<command> <partyname|off|join|create|leave|delete>",
+  usage: "\xA7e/<command> <partyname|off|join|create|leave|delete|invite>",
   aliases: [ "p" ],
   flags: on,
   (sender, label, args, flags) ->
@@ -124,18 +133,36 @@ registerCommand
         if Party.get args[1]
           sender.sendMessage "\xA7cA party with that name already exists"
           return
+        unless Party.ownedBy(sender).length < max_owned_parties
+          sender.sendMessage "\xA7cYou may only own #{max_owned_parties} parties"
+          return
 
         party = new Party args[1], sender, args[2], flags.indexOf('i') != -1, flags.indexOf('m') != -1
         sender.sendMessage "\xA7a=> #{party}"
       when "off"
         parties.players[sender.name] = undefined
         sender.sendMessage "\xA7eNow talking in global chat"
+      when "leave"
+        if args.length < 2
+          sender.sendMessage "\xA7e/party leave <name>"
+          return
+        unless isInParty sender, args[1]
+          sender.sendMessage "\xA7cYou aren't in a party by the name of '#{args[1]}'"
+          return
+
+        party = Party.get args[1]
+
+        if party.owner is _s sender.name
+          sender.sendMessage "\xA7cYou can't leave your own party, you must delete it"
+
+        userIndex = party.users.indexOf _s sender.name
+        party.users.splice userIndex, 1
       when "delete"
         ''
       else
         if isInParty sender, args[0]
           disableAdminChat sender if disableAdminChat
-          party = Party.get(args[0])
+          party = Party.get args[0]
           parties.players[sender.name] = party.name
           sender.sendMessage "\xA7aYou are now talking in #{party.displayName}"
         else

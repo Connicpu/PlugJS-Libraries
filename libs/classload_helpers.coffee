@@ -5,3 +5,4 @@ loadClass = (classPath) ->
       constructors = classInfo.constructors
       throw "No known constructors" if constructors.length == 0
       
+String.prop 'plugin', get: () -> getPlugin @

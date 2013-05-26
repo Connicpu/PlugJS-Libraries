@@ -10,7 +10,8 @@ class TimeSpan
 
   class TimeSpanOfConverter
     constructor: (@span) ->
-    @prop 'time', get: () -> @span.to_milliseconds.value
+    @prop 'time', get: () -> @milliseconds
+    @prop 'milliseconds', get: () -> @span.to_milliseconds.value
     @prop 'ticks', get: () -> @span.to_ticks.value
     @prop 'seconds', get: () -> @span.to_seconds.value
     @prop 'minutes', get: () -> @span.to_minutes.value

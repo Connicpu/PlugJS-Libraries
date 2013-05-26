@@ -5,7 +5,7 @@ adminFormat = "\xA7r\xA7b(:displayName\xA7r\xA7b)\xA7r :message"
 partyFormat = "\xA7r\xA79(:party\xA7r\xA79)\xA7r \xA7a(:displayName\xA7r\xA7a)\xA7r :message"
 
 # Chat parameters
-eventParams = [
+chatFormatParams = [
   "prefix"
   "suffix"
   "chatcolor"

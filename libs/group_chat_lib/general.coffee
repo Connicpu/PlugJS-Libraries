@@ -11,7 +11,7 @@ ignoreList = (sender, rlist) ->
     rlist.remove gplr player unless list.indexOf _s(sender.name) == -1
 
 formatChat = (format, fmtEvent) ->
-  for param in eventParams
+  for param in chatFormatParams
     format = format.replace(":#{param}", fmtEvent[param] || "")
   format.replace(":message", "%2$s")
 
