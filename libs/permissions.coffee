@@ -85,19 +85,35 @@ class Permissions
     class PlayerOptionInfoNoWorld
       constructor: (@pinfo, @node, @def) ->
         @player = @pinfo.player
-      @prop 'boolean', get: () -> chatProvider.getPlayerInfoBoolean @player, @node, @def
-      @prop 'string', get: () -> chatProvider.getPlayerInfoString @player, @node, @def
-      @prop 'double', get: () -> chatProvider.getPlayerInfoDouble @player, @node, @def
-      @prop 'integer', get: () -> chatProvider.getPlayerInfoInteger @player, @node, @def
+      @prop 'boolean', 
+        get: () -> chatProvider.getPlayerInfoBoolean @player, @node, @def
+        set: (value) -> chatProvider.setPlayerInfoBoolean @player, @node, value
+      @prop 'string', 
+        get: () -> chatProvider.getPlayerInfoString @player, @node, @def
+        set: (value) -> chatProvider.setPlayerInfoString @player, @node, value
+      @prop 'double', 
+        get: () -> chatProvider.getPlayerInfoDouble @player, @node, @def
+        set: (value) -> chatProvider.setPlayerInfoDouble @player, @node, value
+      @prop 'integer', 
+        get: () -> chatProvider.getPlayerInfoInteger @player, @node, @def
+        set: (value) -> chatProvider.setPlayerInfoInteger @player, @node, @def
     class PlayerOptionInfoWithWorld
       constructor: (@pinfo, @node, @world, @def) ->
         @player = @pinfo.player
-      @prop 'boolean', get: () -> chatProvider.getPlayerInfoBoolean @world, @player.name, @node, @def
-      @prop 'string', get: () -> chatProvider.getPlayerInfoString @world, @player.name, @node, @def
-      @prop 'double', get: () -> chatProvider.getPlayerInfoDouble @world, @player.name, @node, @def
-      @prop 'integer', get: () -> chatProvider.getPlayerInfoInteger @world, @player.name, @node, @def
+      @prop 'boolean', 
+        get: () -> chatProvider.getPlayerInfoBoolean @world, @player.name, @node, @def
+        set: () -> chatProvider.setPlayerInfoBoolean @world, @player.name, @node, value
+      @prop 'string', 
+        get: () -> chatProvider.getPlayerInfoString @world, @player.name, @node, @def
+        set: () -> chatProvider.setPlayerInfoString @world, @player.name, @node, value
+      @prop 'double', 
+        get: () -> chatProvider.getPlayerInfoDouble @world, @player.name, @node, @def
+        set: () -> chatProvider.setPlayerInfoDouble @world, @player.name, @node, value
+      @prop 'integer', 
+        get: () -> chatProvider.getPlayerInfoInteger @world, @player.name, @node, @def
+        set: () -> chatProvider.setPlayerInfoInteger @world, @player.name, @node, value
 
-    getInfo: (node, world, def) -> if world? then new PlayerOptionInfoWithWorld @, node, world, def else new PlayerOptionInfoNoWorld @, node, def
+    getInfo: (node, def, world) -> if world? then new PlayerOptionInfoWithWorld @, node, world, def else new PlayerOptionInfoNoWorld @, node, def
 
     @prop 'primaryGroup', get: () -> getPrimaryGroup null
     @prop 'groups', get: () -> getGroups null

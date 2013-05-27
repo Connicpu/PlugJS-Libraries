@@ -29,13 +29,20 @@ function gplr(pn) {
     var aop = org.bukkit.Bukkit.getOnlinePlayers();
     return __gplr__(pn,aop);
 }
+function getEntity(entity) {
+    if (entity instanceof org.bukkit.entity.Entity) {
+        return entity;
+    } else {
+        return org.bukkit.entity[entity];
+    }
+}
 function spawnEntity(type, loc) {
     loc = getloc(loc);
-    return loc.world.spawnEntity(loc, org.bukkit.entity.EntityType[type]);
+    return loc.world.spawnEntity(loc, getEntity(type));
 }
 function spawn(type, loc) {
     loc = getloc(loc);
-    return loc.world.spawn(loc, org.bukkit.entity[type]);
+    return loc.world.spawn(loc, getEntity(type));
 }
 function getPlugin(name) {
     if (typeof(name) !== 'string') {

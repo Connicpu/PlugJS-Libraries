@@ -32,4 +32,4 @@ registerEvent js, "chatFormat", (event) ->
   playerInfo = Permissions::getPlayer(event.player)
   event.prefix = playerInfo.prefix
   event.suffix = playerInfo.suffix
-  event.clantag = playerInfo.getInfo('clantag').string
+  event.clantag = playerInfo.getInfo('clantag', '').string

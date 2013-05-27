@@ -103,8 +103,10 @@ String::toTitleCase = () ->
 String.prop 'titleCase', get: () -> @toTitleCase()
 
 enumerate = (_enum) ->
+  enums = []
   for k,v of _enum
-    v if v instanceof _enum
+    enums.push v if v instanceof _enum
+  enums
 
 enumFind = (_enum, value) ->
   value = _s(value).toUpperCase().replace /[_]/i, ''
