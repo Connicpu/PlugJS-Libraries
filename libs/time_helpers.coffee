@@ -61,6 +61,6 @@ Number.prop 'second', get: () -> @seconds
 Number.prop 'minute', get: () -> @minutes
 Number.prop 'hour', get: () -> @hours
 Number.prop 'day', get: () -> @days
-Number.prop 'week', get: () -> @week
+Number.prop 'week', get: () -> @weeks
 
 Object.prop 'to_n', get: () -> new Number(@) + 0
