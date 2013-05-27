@@ -19,62 +19,66 @@ class Permissions
     constructor: (@player) ->
       @player = (gplr @player || Bukkit.server.getOfflinePlayer @player) unless @player instanceof org.bukkit.command.CommandSender
     getGroups: (world) ->
-      if world == undefined
+      unless world?
         permissionProvider.getPlayerGroups @player
       else
         permissionProvider.getPlayerGroups world, @player.name
     getPrimaryGroup: (world) ->
       permissionProvider.getPrimaryGroup world
     has: (permission, world) ->
-      if world is undefined
+      unless world?
         permissionProvider.has @player, permission
       else
         permissionProvider.has world, @player.name, permission
     add: (permission, world) ->
-      if world is undefined
+      unless world?
         permissionProvider.playerAdd @player, permission
       else
         permissionProvider.playerAdd world, @player.name, permission
     remove: (permission, world) ->
-      if world is undefined
+      unless world?
         permissionProvider.playerRemove @player, permission
       else
         permissionProvider.playerRemove world, @player.name, permission
     isInGroup: (group, world) ->
-      if world is undefined
+      unless world?
         permissionProvider.playerInGroup @player, group
       else
         permissionProvider.playerInGroup world, @player.name, group
     addGroup: (group, world) ->
-      if world is undefined
+      unless world?
         permissionProvider.playerAddGroup @player, group
       else
         permissionProvider.playerAddGroup world, @player.name, group
     removeGroup: (group, world) ->
-      if world is undefined
+      unless world?
         permissionProvider.playerRemoveGroup @player, group
       else
         permissionProvider.playerRemoveGroup world, @player.name, group
 
     getPrefix: (world) ->
-      if world is undefined
+      unless world?
         chatProvider.getPlayerPrefix @player
       else
         chatProvider.getPlayerPrefix world, @player.name
     setPrefix: (value, world) ->
       if world is undefined
         chatProvider.setPlayerPrefix @player, value
+      else if world is null
+        chatProvider['setPlayerPrefix(java.lang.String,java.lang.String)'] world, @player.name, value
       else
         chatProvider.setPlayerPrefix world, @player.name, value
 
     getSuffix: (world) ->
-      if world is undefined
+      unless world?
         chatProvider.getPlayerSuffix @player
       else
         chatProvider.getPlayerSuffix world, @player.name
     setSuffix: (value, world) ->
       if world is undefined
         chatProvider.setPlayerSuffix @player, value
+      else if world is null
+        chatProvider['setPlayerSuffix(java.lang.String,java.lang.String)'] world, @player.name, value
       else
         chatProvider.setPlayerSuffix world, @player.name, value
 

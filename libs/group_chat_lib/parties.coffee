@@ -162,7 +162,11 @@ registerCommand
           party.users.splice userIndex, 1
           sender.sendMessage "\xA7eYou have left #{party.displayName}"
         when "delete"
-          ''
+          if args.length < 2
+            sender.sendMessage "\xA7e/party delete <name>"
+            return
+          unless Party.get(args[1])?
+            return
         else
           if isInParty sender, args[0]
             disableAdminChat sender if disableAdminChat
