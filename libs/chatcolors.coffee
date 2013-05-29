@@ -30,6 +30,6 @@ registerEvent player, "chat", (event) ->
 
 registerEvent js, "chatFormat", (event) ->
   playerInfo = Permissions::getPlayer(event.player)
-  event.prefix = playerInfo.prefix
-  event.suffix = playerInfo.suffix
-  event.clantag = playerInfo.getInfo('clantag', '').string
+  event.prefix = playerInfo.prefix.replace /\&(?=[0-9a-fk-o])/i, '\xA7'
+  event.suffix = playerInfo.suffix.replace /\&(?=[0-9a-fk-o])/i, '\xA7'
+  event.clantag = playerInfo.getInfo('clantag', '').string.replace /\&(?=[0-9a-fk-o])/i, '\xA7'
