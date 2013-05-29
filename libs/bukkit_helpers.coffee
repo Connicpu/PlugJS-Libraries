@@ -102,6 +102,22 @@ String::toTitleCase = () ->
 
 String.prop 'titleCase', get: () -> @toTitleCase()
 
+class ReplaceArgs
+  constructor: (@args) ->
+    @args = _a @args
+    @match = @args[0]
+    @groups = @args.splice 1, @args.length - 3
+    @offset = @args[1]
+    @input = @args[2]
+
+String::toSentenceCase = () ->
+  str = _s @
+  str = str.replace /([^a-z]+)?(.*?)(x[d3p]|\:[lspvd]|\.|\;|$)/ig, () ->
+    args = new ReplaceArgs arguments
+    return "#{args.groups[0] ? ''}#{args.groups[1].substr(0, 1).toUpperCase()}#{args.groups[1].substr(1).toLowerCase()}#{args.groups[2] ? ''}"
+  str = str.replace /\bi\b/ig, 'I'
+  str
+
 enumerate = (_enum) ->
   enums = []
   for k,v of _enum

@@ -1,10 +1,11 @@
 replacers = [
-  [/fuck/i, 'mkay']
-  [/\bass/i, 'bass']
-  [/shit/i, 'shite']
-  [/fag(g)?(ot|et)?/i, "bob saget"]
-  [/\bdarn/i, "damn"]
-  [/bitch/i, "bich"]
+  [/fuck/ig, 'frik']
+  [/\bass/ig, 'buns']
+  [/shit/ig, 'shite']
+  [/fag(g)?(ot|et)?/ig, "bob saget"]
+  [/\bdarn/ig, "damn"]
+  [/bitch/ig, "bich"]
+  [/.*/, (match) -> match.toSentenceCase()]
 ]
 
 cleanMessage = (message) ->
