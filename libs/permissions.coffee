@@ -14,6 +14,7 @@ class Permissions
   @prop 'superPermsCompatible', get: () -> permissionProvider.hasSuperPermsCompat()
 
   @::getPlayer = (player) -> new PlayerInfo player
+  @getPlayer = @::getPlayer
 
   class PlayerInfo
     constructor: (@player) ->
@@ -89,7 +90,7 @@ class Permissions
         get: () -> chatProvider.getPlayerInfoBoolean @player, @node, @def
         set: (value) -> chatProvider.setPlayerInfoBoolean @player, @node, value
       @prop 'string', 
-        get: () -> chatProvider.getPlayerInfoString @player, @node, @def
+        get: () -> _s chatProvider.getPlayerInfoString @player, @node, @def
         set: (value) -> chatProvider.setPlayerInfoString @player, @node, value
       @prop 'double', 
         get: () -> chatProvider.getPlayerInfoDouble @player, @node, @def
@@ -104,7 +105,7 @@ class Permissions
         get: () -> chatProvider.getPlayerInfoBoolean @world, @player.name, @node, @def
         set: () -> chatProvider.setPlayerInfoBoolean @world, @player.name, @node, value
       @prop 'string', 
-        get: () -> chatProvider.getPlayerInfoString @world, @player.name, @node, @def
+        get: () -> _s chatProvider.getPlayerInfoString @world, @player.name, @node, @def
         set: () -> chatProvider.setPlayerInfoString @world, @player.name, @node, value
       @prop 'double', 
         get: () -> chatProvider.getPlayerInfoDouble @world, @player.name, @node, @def
@@ -118,9 +119,9 @@ class Permissions
     @prop 'primaryGroup', get: () -> getPrimaryGroup null
     @prop 'groups', get: () -> getGroups null
     @prop 'prefix',
-      get: () -> @getPrefix null
+      get: () -> _s @getPrefix null
       set: (value) -> @setPrefix value, null
     @prop 'suffix',
-      get: () -> @getSuffix null
+      get: () -> _s @getSuffix null
       set: (value) -> @setSuffix value, null
 

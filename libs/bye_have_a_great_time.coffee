@@ -5,20 +5,25 @@ class bye_have_a_great_time
 
   @sound = sound
 
-  registerEvent player, 'move', (event) ->
-    if recentlyPlayed[event.player.name] and event.player.velocity.y > -0.1
-      recentlyPlayed[event.player.name] = no
-      return
+  registerEvent spout, 'tick', (event) ->
+    for world in _a Bukkit.server.worlds
+      for entity in _a world.entities
+        continue unless entity instanceof org.bukkit.entity.LivingEntity
 
-    return if recentlyPlayed[event.player.name]
-    return unless event.player.velocity.y < -0.3
-    return unless heightAboveGround(event.player) > 10
+        if recentlyPlayed[entity.entityId] and entity.velocity.y > -0.1
+          recentlyPlayed[entity.entityId] = no
+          continue
 
-    recentlyPlayed[event.player.name] = yes
-    sound.playFor event.player
-    for p in _a Bukkit.server.onlinePlayers
-      continue if p == event.player
-      sound.playFor p, event.player.location, 100
+        continue if recentlyPlayed[entity.entityId]
+        continue unless entity.velocity.y < -0.3
+        continue unless heightAboveGround(entity) > 10
+
+        recentlyPlayed[entity.entityId] = yes
+        for player in _a Bukkit.server.onlinePlayers
+          if player is entity
+            sound.playFor player
+          else
+            sound.playFor player, entity.location, 50
 
   registerEvent player, 'quit', (event) ->
     sound.play()

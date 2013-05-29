@@ -30,8 +30,10 @@ function gplr(pn) {
     return __gplr__(pn,aop);
 }
 function getEntity(entity) {
-    if (entity instanceof org.bukkit.entity.Entity) {
+    if (typeof(entity) === 'function') {
         return entity;
+    } else if (entity instanceof org.bukkit.entity.Entity) {
+        return entity["class"];
     } else {
         return org.bukkit.entity[entity];
     }
