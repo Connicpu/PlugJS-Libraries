@@ -6,5 +6,3 @@ Afterwards, place all of the files in this repo into ./plugins/PlugJS
 
 If you do not have any permissions plugins with support for options installed, you
 could get unexpected behaviours (working on that one)
-
-If you don't have SpoutPlugin installed, be sure to comment out the bye_have_a_great_time.coffee library in plugin.js

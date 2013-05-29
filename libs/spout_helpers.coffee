@@ -35,10 +35,13 @@ class Notification
     unless @item instanceof org.bukkit.inventory.ItemStack
       @item = itemStack @item, 1
   displayFor: (player) ->
-    player.sendNotification @title, @message, @item, @time
+    if player.spoutCraftEnabled
+      player.sendNotification @title, @message, @item, @time
+    else
+      player.sendMessage "\xA76[#{@title}]\xA7r #{@message}"
   display: () ->
     for player in _a Bukkit.server.onlinePlayers
-      player.sendNotification @title, @message, @item, @time
+      @displayFor player
 
   registerEvent js, "evalComplete", (event) ->
     if event.result instanceof Notification
