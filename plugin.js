@@ -85,6 +85,8 @@ for (var i in libraries) {
     loadLib(libraries[i], "libs");
 }
 
+log("Finised loading scripts", '2');
+
 /* List of events by group
 
 - block -
