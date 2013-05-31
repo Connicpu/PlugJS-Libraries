@@ -1,10 +1,10 @@
 importPackage org.bukkit
-require 'classload_helpers.coffee'
-require 'permissions.coffee'
-require 'minecraft_items.coffee'
-require 'time_helpers.coffee'
-require 'bukkit_safety_checks.coffee'
-require 'action_queue.coffee'
+require 'classload_helpers'
+require 'permissions'
+require 'minecraft_items'
+require 'time_helpers'
+require 'bukkit_safety_checks'
+require 'action_queue'
 
 checkTeleport = (player) ->
   if player instanceof org.bukkit.entity.Player
@@ -235,4 +235,4 @@ createItemMeta = (baseType, func) ->
   func(meta)
   meta
 
-require 'spout_helpers.coffee' if getPlugin "Spout"
+require 'spout_helpers' if getPlugin "Spout"

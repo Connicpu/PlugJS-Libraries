@@ -21,3 +21,9 @@ function asyncTask(name, func) {
     persistence.put("__async__" + name, thread);
     return thread;
 }
+
+function Runnable(func) {
+    return new java.lang.Runnable {
+        run: func
+    }
+}

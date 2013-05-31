@@ -52,6 +52,19 @@ function getPlugin(name) {
     }
     return loader.server.pluginManager.getPlugin(name);
 }
+function read_proc() {
+    var pb = new java.lang.ProcessBuilder["(java.lang.String[])"](_a(arguments));
+    pb.redirectErrorStream(true);
+    var proc = pb.start();
+    var out = proc.inputStream;
+    var reader = new java.io.BufferedReader(new java.io.InputStreamReader(out));
+    var output = "";
+    var line;
+    while ((line = reader.readLine()) != null) {
+        output += line + "\n";
+    }
+    return output;
+}
 function registerEvent(handler, eventname, callback) {
     if (handler[eventname]) {
         handler[eventname].callbacks.splice(0, 0, callback);
@@ -203,7 +216,7 @@ function loadCoffee(file) {
     var coffee = read_file(file);
     var coffeeMd5 = md5(coffee);
     var fileName = _s(new java.io.File(file).name);
-    var cachePath = "./plugins/PlugJS/coffee_cache/" + fileName.replace(/\.coffee$/, ".js");
+    var cachePath = "./plugins/PlugJS/coffee_cache/" + fileName.replace(/\.coffee$/, ".coffee.js");
     new java.io.File("./plugins/PlugJS/coffee_cache/").mkdirs();
 
     if (new java.io.File(cachePath).exists()) {
@@ -215,18 +228,75 @@ function loadCoffee(file) {
     }
 
     var timer = new Stopwatch();
-    log("Compiling " + fileName, 'a');
-    var javascript = CoffeeScript.compile(coffee, {bare: true});
+    log("Compiling coffeescript " + fileName, 'a');
+    var javascript;
+    try {
+        javascript = read_proc("coffee", "--bare", "--print", "--compile", file);
+    } catch (ex) {
+        try {
+            javascript = read_proc("coffee.cmd", "--bare", "--print", "--compile", file);
+        } catch (ex) {
+            log("Couldn't find node.js coffeescript compiler, falling back to in-proccess", '7')
+            javascript = CoffeeScript.compile(coffee, {bare: true});
+        }
+    }
     timer.stop();
 
     save_file(cachePath, "/*" + coffeeMd5 + "*/\n/* Compiled in " + timer.seconds + " seconds */\n" + javascript);
     plugin.js.eval(javascript);
 }
+function loadIcedCoffee(file) {
+    var iced_coffee = read_file(file);
+    var iced_coffeeMd5 = md5(iced_coffee);
+    var fileName = _s(new java.io.File(file).name);
+    var cachePath = "./plugins/PlugJS/coffee_cache/" + fileName.replace(/\.iced$/, ".iced.js");
+    new java.io.File("./plugins/PlugJS/coffee_cache/").mkdirs();
+
+    if (new java.io.File(cachePath).exists()) {
+        var jsCache = read_file(cachePath);
+        if (jsCache.indexOf("/*" + iced_coffeeMd5 + "*/") == 0) {
+            plugin.js.eval(jsCache);
+            return;
+        }
+    }
+
+    var timer = new Stopwatch();
+    log("Compiling iced coffee " + fileName, 'a');
+    var javascript;
+    try {
+        javascript = read_proc("iced", "--bare", "--print", "--compile", file);
+    } catch (ex) {
+        try {
+            javascript = read_proc("iced.cmd", "--bare", "--print", "--compile", file);
+        } catch (ex) {
+            throw "Could not compile iced coffee (ensure you have node.js and IcedCoffeeScript installed)"
+        }
+    }
+    timer.stop();
+
+    save_file(cachePath, "/*" + iced_coffeeMd5 + "*/\n/* Compiled in " + timer.seconds + " seconds */\n" + javascript);
+    plugin.js.eval(javascript);
+}
 function require(lib) {
-    if (/\.coffee$/i.test(lib)) {
+    if (/\.iced$/i.test(lib)) {
+        loadIcedCoffee("./plugins/PlugJS/libs/" + lib);
+    } else if (/\.coffee$/i.test(lib)) {
         loadCoffee("./plugins/PlugJS/libs/" + lib);
-    } else {
+    } else if (/\.iced$/i.test(lib)) {
         load("./plugins/PlugJS/libs/" + lib);
+    } else {
+        file = "./plugins/PlugJS/libs/" + lib + ".iced";
+        if (new java.io.File(file).exists()) {
+            loadIcedCoffee(file);
+        }
+        file = "./plugins/PlugJS/libs/" + lib + ".coffee";
+        if (new java.io.File(file).exists()) {
+            loadCoffee(file);
+        }
+        file = "./plugins/PlugJS/libs/" + lib + ".js";
+        if (new java.io.File(file).exists()) {
+            load(file);
+        }
     }
 }
 function callEvent(handler, event, data) {

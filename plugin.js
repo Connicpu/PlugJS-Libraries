@@ -1,17 +1,17 @@
 libraries = [
-    "fireworks.js",
-    "enchants.js",
-    "bukkit_helpers.coffee",
-    "eval_helpers.coffee",
-    "geoip.coffee",
-    "money_drops.coffee",
-    "fun_commands.coffee",
-    "dirty_mouth.coffee",
+    "fireworks",
+    "enchants",
+    "bukkit_helpers",
+    "eval_helpers",
+    "geoip",
+    "money_drops",
+    "fun_commands",
+    "dirty_mouth",
     "group_chats.coffee",
     "chatcolors.coffee",
     "noport.coffee",
-    "safety_first.coffee",
-    "bye_have_a_great_time.coffee"
+    "safety_first",
+    "bye_have_a_great_time"
 ];
 
 function log(msg, level) {
@@ -52,24 +52,8 @@ var spout = {
     key: {}
 };
 var CoffeeScript;
-function loadLib(lib, mode) {
-    mode = mode || "core"
-    try {
-        if (CoffeeScript && /\.coffee/i.test(lib)) {
-            loadCoffee("./plugins/PlugJS/"+mode+"/" + lib);
-        } else {
-            load("./plugins/PlugJS/"+mode+"/" + lib);
-        }
-    } catch(ex) {
-        if (ex.rhinoException) {
-            ex = ex.rhinoException;
-            while (ex && ex.unwrap) {
-                ex = ex.unwrap().cause;
-            }
-            ex = (ex || {message: "Unknown error"}).message;
-        }
-        loader.server.broadcast("\xA7cError loading " + lib + ", " + ex, "bukkit.broadcast.admin");
-    }
+function loadLib(lib) {
+    load("./plugins/PlugJS/core/" + lib);
 }
 
 loadLib("js_persistence.js");
@@ -82,7 +66,7 @@ loadLib("econ.js");
 loadLib("metadata.js");
 
 for (var i in libraries) {
-    loadLib(libraries[i], "libs");
+    require(libraries[i], "libs");
 }
 
 log("Finised loading scripts", '2');
