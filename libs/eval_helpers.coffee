@@ -53,7 +53,7 @@ class eval_helpers
 
   registerEvent player, "interact", (event) ->
     return unless event.action == event.action.RIGHT_CLICK_BLOCK
-    return unless event.item.type == Material.BLAZE_ROD
+    return unless event.item?.type == Material.BLAZE_ROD
     return if event.clickedBlock.equals blazeRodStack[event.player.name]
     event.cancelled = yes
     br = blazeRodStack[event.player.name] = event.clickedBlock
@@ -61,7 +61,7 @@ class eval_helpers
     event.player.sendMessage "\xA7aClicked the #{event.blockFace.toString().toLowerCase()} side"
 
   registerEvent player, "interactEntity", (event) ->
-    return unless event.player.itemInHand.type == Material.BLAZE_ROD
+    return unless event.player.itemInHand?.type == Material.BLAZE_ROD
     return if blazeRodStack[event.player.name] == event.rightClicked
     event.cancelled = yes
     br = blazeRodStack[event.player.name] = event.rightClicked

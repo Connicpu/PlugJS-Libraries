@@ -60,3 +60,7 @@ function listMembers(obj) {
 function _n(num) {
     return new Number(num) + 0
 }
+function setTimeout(func, time) {
+    sleep(time);
+    func(_a(arguments.splice(2)));
+}

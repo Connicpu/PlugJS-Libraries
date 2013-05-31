@@ -10,5 +10,5 @@ class Queue
 
 bukkit_async = () ->
   args = _a(arguments)
-  func = args.splice args.length - 1, 1
-  Bukkit.server.scheduler.scheduleSyncDelayedTask plugin, Runnable () -> func.apply @, args
+  func = args.splice(args.length - 1, 1)[0]
+  Bukkit.server.scheduler.scheduleSyncDelayedTask(plugin, (Runnable () -> func.apply @, args), 1)

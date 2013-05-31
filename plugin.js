@@ -51,8 +51,12 @@ var spout = {
     slot: {},
     key: {}
 };
+var exports = {
+};
+var iced;
 var CoffeeScript;
 function loadLib(lib) {
+    log("Loading core script " + lib);
     load("./plugins/PlugJS/core/" + lib);
 }
 
@@ -62,8 +66,12 @@ loadLib("core.js");
 loadLib("async.js");
 loadLib("tt_war_helpers.js");
 loadLib("coffee-script.js");
+loadLib("iced.js");
+loadLib("icedlib.js");
 loadLib("econ.js");
 loadLib("metadata.js");
+
+iced = exports.iced;
 
 for (var i in libraries) {
     require(libraries[i], "libs");

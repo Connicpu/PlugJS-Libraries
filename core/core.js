@@ -228,7 +228,7 @@ function loadCoffee(file) {
     }
 
     var timer = new Stopwatch();
-    log("Compiling coffeescript " + fileName, 'a');
+    log("Compiling coffeescript " + fileName, 'b');
     var javascript;
     try {
         javascript = read_proc("coffee", "--bare", "--print", "--compile", file);
@@ -261,7 +261,7 @@ function loadIcedCoffee(file) {
     }
 
     var timer = new Stopwatch();
-    log("Compiling iced coffee " + fileName, 'a');
+    log("Compiling iced coffee " + fileName, 'b');
     var javascript;
     try {
         javascript = read_proc("iced", "--bare", "--print", "--compile", file);
@@ -278,25 +278,51 @@ function loadIcedCoffee(file) {
     plugin.js.eval(javascript);
 }
 function require(lib) {
-    if (/\.iced$/i.test(lib)) {
-        loadIcedCoffee("./plugins/PlugJS/libs/" + lib);
-    } else if (/\.coffee$/i.test(lib)) {
-        loadCoffee("./plugins/PlugJS/libs/" + lib);
-    } else if (/\.iced$/i.test(lib)) {
-        load("./plugins/PlugJS/libs/" + lib);
-    } else {
-        file = "./plugins/PlugJS/libs/" + lib + ".iced";
-        if (new java.io.File(file).exists()) {
-            loadIcedCoffee(file);
+    var loaded = true;
+    try {
+        if (/\.iced$/i.test(lib)) {
+            log("Loading " + lib, '2');
+            loadIcedCoffee("./plugins/PlugJS/libs/" + lib);
+        } else if (/\.coffee$/i.test(lib)) {
+            log("Loading " + lib, '2');
+            loadCoffee("./plugins/PlugJS/libs/" + lib);
+        } else if (/\.js$/i.test(lib)) {
+            log("Loading " + lib, '2');
+            load("./plugins/PlugJS/libs/" + lib);
+        } else {
+            file = "./plugins/PlugJS/libs/" + lib + ".iced";
+            if (new java.io.File(file).exists()) {
+                log("Loading " + lib + ".iced", '2');
+                loadIcedCoffee(file);
+                return;
+            }
+            file = "./plugins/PlugJS/libs/" + lib + ".coffee";
+            if (new java.io.File(file).exists()) {
+                log("Loading " + lib + ".coffee", '2');
+                loadCoffee(file);
+                return;
+            }
+            file = "./plugins/PlugJS/libs/" + lib + ".js";
+            if (new java.io.File(file).exists()) {
+                log("Loading " + lib + ".js", '2');
+                load(file);
+                return;
+            }
+            loaded = false;
         }
-        file = "./plugins/PlugJS/libs/" + lib + ".coffee";
-        if (new java.io.File(file).exists()) {
-            loadCoffee(file);
+    } catch (ex) {
+        if (ex.rhinoException) {
+            ex = ex.rhinoException;
+            while (ex && ex.unwrap) {
+                ex = ex.unwrap().cause;
+            }
+            ex = (ex || {message: "Unknown error"}).message;
         }
-        file = "./plugins/PlugJS/libs/" + lib + ".js";
-        if (new java.io.File(file).exists()) {
-            load(file);
-        }
+        loader.server.broadcast("\xA7cError loading " + lib + ", " + ex, "bukkit.broadcast.admin");
+        throw "Error loading " + lib;
+    }
+    if (!loaded) {
+        throw "Couldn't find library '" + lib + "'"
     }
 }
 function callEvent(handler, event, data) {

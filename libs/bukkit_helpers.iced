@@ -6,6 +6,18 @@ require 'time_helpers'
 require 'bukkit_safety_checks'
 require 'action_queue'
 
+delayed_do = (times, func) ->
+  for i in [1..times]
+    await bukkit_async i, defer index
+    func index
+incrementBlockId = (block) ->
+  id = block.typeId
+  unless Material.getMaterial(++id)?
+    id = 1
+  try
+    block.typeId = id
+mysteryBlock = (block) ->
+  delayed_do Math.random() * 200, -> incrementBlockId block
 checkTeleport = (player) ->
   if player instanceof org.bukkit.entity.Player
     event =

@@ -6,3 +6,5 @@ Afterwards, place all of the files in this repo into ./plugins/PlugJS
 
 If you do not have any permissions plugins with support for options installed, you
 could get unexpected behaviours (working on that one). Also requires vault.
+
+Requires node and iced-coffee-script to compile .iced files

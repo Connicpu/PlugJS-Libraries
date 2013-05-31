@@ -6,3 +6,10 @@ loadClass = (classPath) ->
       throw "No known constructors" if constructors.length == 0
       
 String.prop 'plugin', get: () -> getPlugin @
+
+cls =
+  toString: () ->
+    output = ""
+    for i in [1..100]
+      output += " \n"
+    output
