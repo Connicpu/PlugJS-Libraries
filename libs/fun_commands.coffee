@@ -159,15 +159,13 @@ registerCommand {
     teleport = if flags.indexOf('f') != -1
       (entity, location) -> 
         entity.sendMessage "\xA7eTeleported!"
-        entity.teleport(location)
+        entity.teleport location
     else
       (entity, location) ->
         safeTeleport entity, location
         entity.sendMessage "\xA7eTeleported!"
 
-    players = if args.length > 1
-      selectPlayers args.slice(0, args.length - 1), sender
-    else [ sender ]
+    players = if args.length > 1 then selectPlayers args.slice(0, args.length - 1), sender else [ sender ]
 
     unless players.length
       sender.sendMessage "\xA7cNone of the players listed were found"

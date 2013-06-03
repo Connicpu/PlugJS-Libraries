@@ -185,10 +185,16 @@ function registerCommand(data, func) {
     
     var command;
     if ((command = loader.server.commandMap.getCommand(data.name)) && command["class"].equals(commandExecClass)) {
-        command.executor.state.func = func;
-    } else {
-        loader.server.commandMap.register("js:", newCommand());
+        log("Unregistering old command '" + data.name + "'", 'e', 'verbose');
+        var list = _a(loader.server.commandMap.commands);
+        for (var i = 0; i < list.length; ++i) {
+            if (_s(list[i].name) == data.name) {
+                loader.server.commandMap.commands.remove(list[i]);
+            }
+        }
     }
+    log ("Registering new command '" + data.name + "'", 'e', 'verbose');
+    loader.server.commandMap.register("js", newCommand());
 }
 function createHexString(arr) {
     var result = "";
@@ -228,7 +234,7 @@ function loadCoffee(file) {
     }
 
     var timer = new Stopwatch();
-    log("Compiling coffeescript " + fileName, 'b');
+    log("Compiling coffeescript " + fileName, 'b', 'verbose');
     var javascript;
     try {
         javascript = read_proc("coffee", "--bare", "--print", "--compile", file);
@@ -261,7 +267,7 @@ function loadIcedCoffee(file) {
     }
 
     var timer = new Stopwatch();
-    log("Compiling iced coffee " + fileName, 'b');
+    log("Compiling iced coffee " + fileName, 'b', 'verbose');
     var javascript;
     try {
         javascript = read_proc("iced", "--bare", "--print", "--compile", file);
@@ -281,30 +287,30 @@ function require(lib) {
     var loaded = true;
     try {
         if (/\.iced$/i.test(lib)) {
-            log("Loading " + lib, '2');
+            log("Loading " + lib, '2', 'verbose');
             loadIcedCoffee("./plugins/PlugJS/libs/" + lib);
         } else if (/\.coffee$/i.test(lib)) {
-            log("Loading " + lib, '2');
+            log("Loading " + lib, '2', 'verbose');
             loadCoffee("./plugins/PlugJS/libs/" + lib);
         } else if (/\.js$/i.test(lib)) {
-            log("Loading " + lib, '2');
+            log("Loading " + lib, '2', 'verbose');
             load("./plugins/PlugJS/libs/" + lib);
         } else {
             file = "./plugins/PlugJS/libs/" + lib + ".iced";
             if (new java.io.File(file).exists()) {
-                log("Loading " + lib + ".iced", '2');
+                log("Loading " + lib + ".iced", '2', 'verbose');
                 loadIcedCoffee(file);
                 return;
             }
             file = "./plugins/PlugJS/libs/" + lib + ".coffee";
             if (new java.io.File(file).exists()) {
-                log("Loading " + lib + ".coffee", '2');
+                log("Loading " + lib + ".coffee", '2', 'verbose');
                 loadCoffee(file);
                 return;
             }
             file = "./plugins/PlugJS/libs/" + lib + ".js";
             if (new java.io.File(file).exists()) {
-                log("Loading " + lib + ".js", '2');
+                log("Loading " + lib + ".js", '2', 'verbose');
                 load(file);
                 return;
             }
@@ -384,6 +390,9 @@ registerCommand({
     if (message.length < 1) {
         return false;
     }
+
+    message = message.replace(/\{clipboard\}/i, sender.clipboardText);
+
     sender.sendMessage("\xA77>> " + message);
     
     cmdEval(message, sender, "js");
@@ -402,6 +411,8 @@ registerCommand({
     if (message.length < 1) {
         return false;
     }
+    message = message.replace(/\{clipboard\}/i, sender.clipboardText);
+    
     sender.sendMessage("\xA77>> " + message);
 
     var coffee;

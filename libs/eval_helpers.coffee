@@ -9,7 +9,7 @@ class eval_helpers
     event.ext.i = event.sender.itemInHand
     event.ext.world = event.sender.world
     event.ext.pl = _a Bukkit.server.onlinePlayers
-    event.ext.en = org.bukkit.entity;
+    event.ext.en = org.bukkit.entity
 
     if evalResultStack[event.sender.name]
       stack = evalResultStack[event.sender.name]
@@ -34,13 +34,12 @@ class eval_helpers
     stack.splice 0, 0, event.result
     stack.threads.splice 0, 0, event.result if event.result instanceof java.lang.Thread
 
-  registerCommand {
-      name: "stopJsThreads"
-      description: "Stops all the threads you've started with js/cf"
-      usage: "\xA7e/<command>"
-      permission: "js.eval"
-      permissionMessage: "\xA7cNo can do, boss!"
-    },
+  registerCommand
+    name: "stopJsThreads",
+    description: "Stops all the threads you've started with js/cf",
+    usage: "\xA7e/<command>",
+    permission: "js.eval",
+    permissionMessage: "\xA7cNo can do, boss!",
     (sender, label, args) ->
       unless (stack = evalResultStack[sender.name]) and stack.threads and stack.threads.length
         sender.sendMessage "\xA7eNo threads stored"

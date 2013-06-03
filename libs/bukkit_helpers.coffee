@@ -4,12 +4,8 @@ require 'permissions'
 require 'minecraft_items'
 require 'time_helpers'
 require 'bukkit_safety_checks'
-require 'action_queue'
+try require 'action_queue'
 
-delayed_do = (times, func) ->
-  for i in [1..times]
-    await bukkit_async i, defer index
-    func index
 incrementBlockId = (block) ->
   id = block.typeId
   unless Material.getMaterial(++id)?
@@ -82,12 +78,16 @@ nearestEntity = (searchEntity, type) ->
 kill = (entity) ->
   entity = gplr entity if typeof entity == 'string'
 
-  if entity.health
+  if entity.health?
     entity.health = 0
   else
     entity.remove()
 
   true
+heal = (entity) ->
+  entity = gplr entity if typeof entity == 'string'
+
+  entity.health = entity.maxHealth
 
 boolOnOff = (bool) ->
   if bool
@@ -179,6 +179,7 @@ class ItemColor
     return new ItemColor(color, Material.WOOL).value
 
 selectPlayers = (args, context) ->
+  plrs = [];
   for p in args
     switch p
       when '*'
@@ -195,7 +196,8 @@ selectPlayers = (args, context) ->
         return plrs
       
     player = gplr p
-    player if player?
+    plrs.push player if player?
+  plrs
 
 selectTarget = (arg, player) ->
   isCoords = (arg) ->
@@ -240,6 +242,11 @@ heightAboveGround = (entity) ->
         return entity.location.y - loc.y if info.solid
 
   entity.location.y
+makeBlockHandler = (block, func) ->
+  registerEvent player, 'interact', (event) ->
+    return unless event.action == event.action.RIGHT_CLICK_BLOCK
+    return unless event.clickedBlock.equals block
+    func event
 
 createItemMeta = (baseType, func) ->
   stack = itemStack(baseType, 1)

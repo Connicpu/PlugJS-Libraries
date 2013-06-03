@@ -26,6 +26,32 @@ class CustomSoundEffect
     else
       sounds.playCustomSoundEffect plugin, player, @url, @notify
     true
+class CustomMusic
+  cache = SpoutManager.getFileManager()
+  sounds = SpoutManager.getSoundManager()
+  constructor: (@url, @notify) ->
+    @notify = off unless @notify?
+    cache.addToCache plugin, @url
+  play: (location, distance, volume) ->
+    if location and distance and volume
+      sounds.playGlobalCustomMusic plugin, @url, @notify, location, distance, volume
+    else if location and distance
+      sounds.playGlobalCustomMusic plugin, @url, @notify, location, distance
+    else if location
+      sounds.playGlobalCustomMusic plugin, @url, @notify, location
+    else
+      sounds.playGlobalCustomMusic plugin, @url, @notify
+    true
+  playFor: (player, location, distance, volume) ->
+    if location and distance and volume
+      sounds.playCustomMusic plugin, player, @url, @notify, location, distance, volume
+    else if location and distance
+      sounds.playCustomMusic plugin, player, @url, @notify, location, distance
+    else if location
+      sounds.playCustomMusic plugin, player, @url, @notify, location
+    else
+      sounds.playCustomMusic plugin, player, @url, @notify
+    true
 
 class Notification
   constructor: (@title, @message, @item, @time) ->

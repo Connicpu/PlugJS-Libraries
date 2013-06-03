@@ -48,6 +48,7 @@ function numArr(start, end) {
     return res;
 }
 function sleep(milliseconds) {
+    milliseconds = milliseconds || 0
     java.lang.Thread.sleep(milliseconds);
 }
 function listMembers(obj) {
@@ -62,5 +63,10 @@ function _n(num) {
 }
 function setTimeout(func, time) {
     sleep(time);
-    func(_a(arguments.splice(2)));
+    func(_a(arguments).splice(2));
+}
+function evalInContext(code, context) {
+    with (context) {
+        eval(_s(code));
+    }
 }

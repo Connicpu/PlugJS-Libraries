@@ -11,10 +11,13 @@ libraries = [
     "chatcolors.coffee",
     "noport.coffee",
     "safety_first",
-    "bye_have_a_great_time"
+    "bye_have_a_great_time",
+    "code_attachments.coffee"
 ];
+var debug_messages = false;
 
-function log(msg, level) {
+function log(msg, level, verbose) {
+    if (verbose && !debug_messages) return;
     if (!level) level = "f";
     if (msg instanceof Array) {
         for (var i in msg) {
@@ -56,7 +59,7 @@ var exports = {
 var iced;
 var CoffeeScript;
 function loadLib(lib) {
-    log("Loading core script " + lib);
+    log("Loading core script " + lib, '2', 'verbose');
     load("./plugins/PlugJS/core/" + lib);
 }
 
