@@ -27,3 +27,25 @@ function Runnable(func) {
         run: func
     }
 }
+
+default_callback = function() {};
+
+bukkit_sync = function(fn, callback, delay, args) {
+  var task;
+  if (callback == null) {
+    callback = default_callback;
+  }
+  if (delay == null) {
+    delay = 1;
+  }
+  if (args == null) {
+    args = [];
+  }
+  task = Runnable(function() {
+    var result = fn.apply(this, args);
+    return async(function() {
+      return callback(result);
+    });
+  });
+  return Bukkit.server.scheduler.scheduleSyncDelayedTask(plugin, task, delay);
+};

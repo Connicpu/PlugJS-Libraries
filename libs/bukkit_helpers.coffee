@@ -12,8 +12,6 @@ incrementBlockId = (block) ->
     id = 1
   try
     block.typeId = id
-mysteryBlock = (block) ->
-  delayed_do Math.random() * 200, -> incrementBlockId block
 checkTeleport = (player) ->
   if player instanceof org.bukkit.entity.Player
     event =

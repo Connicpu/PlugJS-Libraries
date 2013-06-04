@@ -415,18 +415,64 @@ registerCommand({
     
     sender.sendMessage("\xA77>> " + message);
 
-    var coffee;
-    try {
-        coffee = CoffeeScript.compile(message, {bare: true});
-    } catch (ex) {
-        sender.sendMessage("\xA7cError compiling coffee: " + ex);
-        return;
-    }
+    async(function() {
+        var coffee;
+        try {
+            coffee = NodeCompiler.CompileCoffee(message);
+            if (/^\.\/js\/temp_code\.coffee\.tmp\:([\d]+)/i.test(coffee)) {
+                throw coffee;
+            }
+        } catch (ex) {
+            bukkit_sync(function(){ sender.sendMessage("\xA7cCompilation error: " + ex); });
+            return;
+        }
 
-    if (evalEchoPlrs.indexOf(_s(sender.name)) != -1) {
-        sender.sendMessage("\xA78>> " + coffee);
+        bukkit_sync(function() {
+            if (evalEchoPlrs.indexOf(_s(sender.name)) != -1) {
+                sender.sendMessage("\xA78>> " + coffee);
+            }
+
+            cmdEval(coffee, sender, "cf");
+        })
+    });
+});
+
+registerCommand({
+    name: "icf",
+    description: "Executes coffeescript in the server",
+    usage: "\xA7cUsage: /<command> [coffeescript code]",
+    permission: "js.eval",
+    permissionMessage: "\xA7cFak u gooby",
+    aliases: [ "icedcoffee", "icedcoffeescript" ]
+}, function(sender, label, args) {
+    var message = args.join(" ");
+
+    if (message.length < 1) {
+        return false;
     }
-    cmdEval(coffee, sender, "cf");
+    message = message.replace(/\{clipboard\}/i, sender.clipboardText);
+    
+    sender.sendMessage("\xA77>> " + message);
+
+    async(function() {
+        var coffee;
+        try {
+            coffee = NodeCompiler.CompileIced(message);
+            if (/^\.\/js\/temp_code\.iced\.tmp\:([\d]+)/i.test(coffee)) {
+                throw coffee;
+            }
+        } catch (ex) {
+            bukkit_sync(function(){ sender.sendMessage("\xA7cCompilation error: " + ex); });
+            return;
+        }
+        bukkit_sync(function() {
+            if (evalEchoPlrs.indexOf(_s(sender.name)) != -1) {
+                sender.sendMessage("\xA78>> " + coffee);
+            }
+
+            cmdEval(coffee, sender, "icf");
+        })
+    });
 });
 
 registerEvent(player, "command", function(event) {

@@ -14,7 +14,7 @@ libraries = [
     "bye_have_a_great_time",
     "code_attachments.coffee"
 ];
-var debug_messages = false;
+var debug_messages = true;
 
 function log(msg, level, verbose) {
     if (verbose && !debug_messages) return;
@@ -66,6 +66,7 @@ function loadLib(lib) {
 loadLib("js_persistence.js");
 loadLib("lang_helpers.js");
 loadLib("core.js");
+loadLib("compile.js");
 loadLib("async.js");
 loadLib("tt_war_helpers.js");
 loadLib("coffee-script.js");
