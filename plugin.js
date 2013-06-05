@@ -13,7 +13,8 @@ libraries = [
     "safety_first",
     "bye_have_a_great_time",
     "code_attachments",
-    "display_names"
+    "display_names",
+    "voting_machine"
 ];
 var debug_messages = true;
 

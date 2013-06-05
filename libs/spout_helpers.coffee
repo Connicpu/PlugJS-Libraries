@@ -1,5 +1,7 @@
 SpoutManager = getPlugin("Spout").class.classLoader.loadClass("org.getspout.spoutapi.SpoutManager").getMethod("getInstance").invoke(null)
 
+SpoutManager.getFileManager().removeFromCache plugin, SpoutManager.getFileManager().getCache plugin
+
 class CustomSoundEffect
   cache = SpoutManager.getFileManager()
   sounds = SpoutManager.getSoundManager()

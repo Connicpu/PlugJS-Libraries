@@ -165,7 +165,7 @@ registerCommand
           if args.length < 2
             sender.sendMessage "\xA7e/party delete <name>"
             return
-          unless Party.get(args[1])?
+          unless (p = Party.get args[1])?
             return
         else
           if isInParty sender, args[0]

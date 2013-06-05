@@ -66,6 +66,7 @@ function read_proc() {
     return output;
 }
 function registerEvent(handler, eventname, callback) {
+    callback.cancelToken = new java.lang.Object();
     if (handler[eventname]) {
         handler[eventname].callbacks.splice(0, 0, callback);
     } else {
@@ -83,6 +84,17 @@ function registerEvent(handler, eventname, callback) {
         handler[eventname].callbacks = [];
         handler[eventname].callbacks.push(callback);
     }
+    return callback.cancelToken;
+}
+function unregisterEvent(handler, eventname, cancelToken) {
+    list = handler[eventname].callbacks;
+    for (var i = 0; i < list.length; ++i) {
+        if (list[i].cancelToken == cancelToken) {
+            list.splice(i, 1);
+            return true;
+        }
+    }
+    return false;
 }
 function registerPermission(permission, perm_default, parents) {
     if (loader.server.pluginManager.getPermission(permission)) {

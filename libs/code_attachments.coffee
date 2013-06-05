@@ -1,5 +1,6 @@
 class CodeBlockAttachments
   attaching = registerHash 'code_attachments_currently'
+  codeCache = JsPersistence.tryGet "CodeBlockAttachments", {}
 
   generateAttachment = (block, type) ->
     block = switch type
@@ -9,6 +10,13 @@ class CodeBlockAttachments
     return new org.bukkit.metadata.FixedMetadataValue plugin, block
 
   registerPermission "js.code.attaching", "op"
+
+  for key, code of codeCache
+    split = key.split ','
+    world = Bukkit.server.getWorld split[3]
+    block = world.getBlockAt split[0], split[1], split[2]
+    attachment = new org.bukkit.metadata.FixedMetadataValue plugin, code
+    block.setMetadata "CodeBlockAttachment", attachment
 
   registerCommand
     name: "blockcode",
@@ -52,6 +60,9 @@ class CodeBlockAttachments
         block.removeMetadata "CodeBlockAttachment", plugin
       attachment = attaching[event.player.entityId]
       block.setMetadata "CodeBlockAttachment", attachment
+      cacheKey = "#{block.x},#{block.y},#{block.z},#{block.world.name}"
+      codeCache[cacheKey] = _s attachment.asString()
+      JsPersistence.save()
       event.player.sendMessage "\xA76Code attached to #{block.type} @ data=#{block.data}, x=#{block.x}, y=#{block.y}, z=#{block.z}"
       attaching[event.player.entityId] = undefined
       return

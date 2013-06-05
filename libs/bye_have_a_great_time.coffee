@@ -1,7 +1,7 @@
-pixel_peeker_polka = new CustomMusic "https://dl.dropboxusercontent.com/u/47432776/spout/sound/pixel_peeker_polka.ogg"
+pixel_peeker_polka = new CustomMusic "https://connorcpu.net/content/spout/pixel_peeker_polka.ogg"
 class bye_have_a_great_time
   throw "SpoutPlugin not found!" unless 'Spout'.plugin?
-  sound = new CustomSoundEffect "https://dl.dropboxusercontent.com/u/47432776/spout/sound/bye_have_a_great_time.ogg"
+  sound = new CustomSoundEffect "https://connorcpu.net/content/spout/bye_have_a_great_time.ogg"
   recentlyPlayed = {}
 
   @sound = sound
