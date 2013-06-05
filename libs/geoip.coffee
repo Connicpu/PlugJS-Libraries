@@ -1,9 +1,12 @@
 class GeoIP
+  __s = (input) ->
+    return null unless input?
+    return _s input
   class Country
     constructor: (@geoip) ->
     @prop 'geoip', writable: true
-    @prop 'name', get: () -> _s @geoip.countryName
-    @prop 'code', get: () -> _s @geoip.countryCode
+    @prop 'name', get: () -> __s @geoip.countryName
+    @prop 'code', get: () -> __s @geoip.countryCode
   class Coordinates
     constructor: (@geoip) ->
     @prop 'geoip', writable: true
@@ -12,10 +15,10 @@ class GeoIP
   class LocalCodes
     constructor: (@geoip) ->
     @prop 'geoip', writable: true
-    @prop 'dma', get: () -> _s @geoip.dma_code
-    @prop 'area', get: () -> _s @geoip.area_code
-    @prop 'metro', get: () -> _s @geoip.metro_code
-    @prop 'postal', get: () -> _s @geoip.postalCode
+    @prop 'dma', get: () -> __s @geoip.dma_code
+    @prop 'area', get: () -> __s @geoip.area_code
+    @prop 'metro', get: () -> __s @geoip.metro_code
+    @prop 'postal', get: () -> __s @geoip.postalCode
 
   constructor: (addr) ->
     addr = java.net.InetAddress.getByName addr if typeof addr == 'string'
@@ -30,8 +33,8 @@ class GeoIP
   @prop 'lookup', get: () -> geoPlugin.geoIPLookup
 
   @prop 'country', get: () -> new Country @geoip
-  @prop 'region', get: () -> _s @geoip.region
-  @prop 'city', get: () -> _s @geoip.city
+  @prop 'region', get: () -> __s @geoip.region
+  @prop 'city', get: () -> __s @geoip.city
   @prop 'coordinates', get: () -> new Coordinates @geoip
   @prop 'codes', get: () -> new LocalCodes @geoip
 

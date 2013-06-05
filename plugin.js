@@ -7,12 +7,13 @@ libraries = [
     "money_drops",
     "fun_commands",
     "dirty_mouth",
-    "group_chats.coffee",
-    "chatcolors.coffee",
-    "noport.coffee",
+    "group_chats",
+    "chatcolors",
+    "noport",
     "safety_first",
     "bye_have_a_great_time",
-    "code_attachments.coffee"
+    "code_attachments",
+    "display_names"
 ];
 var debug_messages = true;
 
