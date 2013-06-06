@@ -62,7 +62,7 @@ class VotingMachine
     toJSON: (json = {}) ->
       json.type = @type()
       json.options = @options
-      json.result = @results
+      json.results = @results
       json
 
   @fromJSON: (json) ->
@@ -138,13 +138,11 @@ class VotingMachine
     yesVote = new VotingMachine.Option
       label: "\xA7aYes",
       material: Material.WOOL,
-      data: ItemColor.fromWoolName 'lime',
-      information: "I vote yes on this proposal"
+      data: ItemColor.fromWoolName('lime'),
     noVote = new VotingMachine.Option
       label: "\xA74No",
       material: Material.WOOL,
-      data: ItemColor.fromWoolName 'red',
-      information: "I vote no on this proposal"
+      data: ItemColor.fromWoolName('red'),
 
     type: () -> "YesNoVote"
     constructor: (@text, @title) ->
@@ -175,3 +173,78 @@ class VotingMachine
       contents[9*1 + 2] = @options[0].item
       # Put no option at row 2 column 7
       contents[9*1 + 6] = @options[1].item
+
+  class @SimpleMultiVote extends Vote
+    type: () -> "SimpleMultiVote"
+    constructor: (@org_options, @text, @title) ->
+      options = for option in @org_options
+        option.label = _s option.label
+        color = option.color = _s option.color
+        color = new ItemColor color, "Wool"
+
+        new VotingMachine.Option
+          label: "\xA7#{color.chatColor()}#{option.label}",
+          material: Material.WOOL,
+          data: color.value
+
+      super options
+
+    @jsonConstructor = (json) ->
+      new VotingMachine.YesNoVote json.org_options, json.text, json.title
+
+    toJSON: () ->
+      json = super()
+      json.text = __s @text
+      json.title = __s @title
+      json.org_options = @org_options
+      json
+
+    requiredRows: () -> (@options.length - @options.length % 4)/4 + 2
+    placeInInventory: (contents) ->
+      infoItem = itemStack Material.PAPER, -343
+      infoText = @text
+      infoItem.itemMeta = createItemMeta Material.PAPER, (meta) ->
+        meta.displayName = "Voting information"
+        meta.lore = [ infoText ]
+
+      contents[4] = infoItem
+
+      options = @options.slice 0
+
+      rownum = 0
+      while options.length
+        ++rownum
+        row = options.splice 0, 4
+        switch row.length
+          when 4
+            contents[9*rownum + 1] = row[0].item
+            contents[9*rownum + 3] = row[1].item
+            contents[9*rownum + 5] = row[2].item
+            contents[9*rownum + 7] = row[3].item
+          when 3
+            contents[9*rownum + 2] = row[0].item
+            contents[9*rownum + 4] = row[1].item
+            contents[9*rownum + 6] = row[2].item
+          when 2
+            contents[9*rownum + 2] = row[0].item
+            contents[9*rownum + 6] = row[1].item
+          when 1
+            contents[9*rownum + 4] = row[0].item
+
+  class @VotingMachine
+    constructor: (@vote, @block) ->
+      @key = "#{@block.x},#{@block.y},#{@block.z},#{@block.world.name}"
+    @prop 'openCode',
+      get: () -> CoffeeScript.compile """
+          
+        """, bare: yes
+
+
+testVote = new VotingMachine.SimpleMultiVote [
+    { label: "Fluttershy", color: 'yellow' }
+    { label: "Rainbow Dash", color: 'lightblue' }
+    { label: "Twilight Sparkle", color: 'magenta' }
+    { label: "Rarity", color: 'purple' }
+    { label: "Pinkie Pie", color: 'pink' }
+    { label: "Applejack", color: 'orange' }
+  ], "Who is best pony?"

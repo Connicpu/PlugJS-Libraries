@@ -86,3 +86,9 @@ class CodeBlockAttachments
       else
         log "#{error}", 'c'
 
+  @::AttachCode = (block, code) ->
+    attachment = new org.bukkit.metadata.FixedMetadataValue plugin, codeblock.setMetadata "CodeBlockAttachment", attachment
+    cacheKey = "#{block.x},#{block.y},#{block.z},#{block.world.name}"
+    codeCache[cacheKey] = _s attachment.asString()
+    JsPersistence.save()
+    true

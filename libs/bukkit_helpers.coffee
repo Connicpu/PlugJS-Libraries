@@ -145,6 +145,7 @@ enumFind = (_enum, value) ->
 
 class ItemColor
   dyes = ["black", "red", "green", "brown", "blue", "purple", "cyan", "lightgray", "gray", "pink", "lime", "yellow", "lightblue", "magenta", "orange", "white"]
+  chat = ["black", "blue", "green", "cyan", "red", "magenta", "orange", "lightgray", "gray", "purple", "lime", "lightblue", "brown", "pink", "yellow", "white"]
 
   constructor: (@value, mode) ->
     switch _s(mode).toTitleCase()
@@ -160,6 +161,12 @@ class ItemColor
     dyes[15 - @value]
   dyeName: () ->
     dyes[@value]
+  chatColor: (mode) ->
+    switch _s(mode).toTitleCase()
+      when "Ink Sack"
+        chat.indexOf(@dyeName()).toString 16
+      else
+        chat.indexOf(@woolName()).toString 16
 
   @fromDyeName: (color) ->
     index = dyes.indexOf color
