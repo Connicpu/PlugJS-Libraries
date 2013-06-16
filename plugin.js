@@ -11,7 +11,7 @@ libraries = [
     "chatcolors",
     "noport",
     "safety_first",
-    "bye_have_a_great_time",
+    //"bye_have_a_great_time",
     "code_attachments",
     "display_names",
     "voting_machine"
