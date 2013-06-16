@@ -52,7 +52,7 @@ registerCommand
   name: "give",
   description: "Gives items!",
   usage: "\xA7eUsage: /<command> <player> <item[:data]> [amount]",
-  permission: registerPermission "js.fun.give.others", "op",
+  permission: registerPermission("js.fun.give.others", "op"),
   permissionMessage: "\xA7cNo can do, boss.",
   (sender, label, args) ->
     unless args.length >= 2 and args.length <= 3
@@ -95,8 +95,7 @@ registerCommand
   description: "Give yourself an item!",
   usage: "\xA7eUsage: /<command> <item[:data]> [amount]",
   permission: registerPermission("js.fun.give", "op", [
-    permission: "js.fun.give.others"
-    value: true
+    { permission: "js.fun.give.others", value: true }
   ]),
   permissionMessage: "\xA7cNo can do, boss.",
   aliases: [ "i" ],
@@ -143,8 +142,7 @@ registerCommand
   description: "Teleport to someone!",
   usage: "\xA7eUsage: /<command> [-f] [players] <target>",
   permission: registerPermission("js.fun.teleport", "op", [
-    permission: "js.fun.teleport.others"
-    value: on
+    { permission: "js.fun.teleport.others", value: on }
   ]),
   permissionMessage: "\xA7cNo can do, boss.",
   aliases: [ "teleport" ],
@@ -172,9 +170,10 @@ registerCommand
 
     sender.sendMessage "\xA7ePlayer(s) teleported" unless players.indexOf(sender) != -1
 
-registerPermission "js.fun.teleport.call", "true", [
-  permission: "js.fun.teleport", value: on
-]
+registerPermission("js.fun.teleport.call", "true", [
+  { permission: "js.fun.teleport", value: on }
+])
+
 registerCommand
   name: "bring",
   description: "Go to and be brought by other players",
@@ -182,12 +181,11 @@ registerCommand
   (sender, label, args) ->
     
 
-registerCommand {
-    name: "ping"
-    description: "A way to tell if the server is responding"
-    usage: "\xA7e/<command>"
-    aliases: [ "pong" ]
-  },
+registerCommand
+  name: "ping",
+  description: "A way to tell if the server is responding",
+  usage: "\xA7e/<command>",
+  aliases: [ "pong" ],
   (sender, label, args) ->
     if label == "ping"
       sender.sendMessage "\xA7ePong!"

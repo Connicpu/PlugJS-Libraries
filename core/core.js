@@ -230,6 +230,27 @@ function md5(input) {
 function defineGlobal(name) {
     plugin.js.eval("var " + name + ";");
 }
+function evalScript(javascript) {
+    try {
+        plugin.js.eval(javascript);
+    } catch (exception) {
+        var ex = exception;
+        if (ex.rhinoException) {
+            ex = ex.rhinoException;
+            while (ex && ex.unwrap) {
+                ex = ex.unwrap().cause;
+            }
+            ex = (ex || {message: "Unknown error"}).message;
+        }
+
+        log(ex);
+        if (/syntax error/i.test(ex)) {
+            throw "\n" + javascript;
+        } else {
+            throw exception;
+        }
+    }
+}
 function loadCoffee(file) {
     var coffee = read_file(file);
     var coffeeMd5 = md5(coffee);
@@ -240,7 +261,7 @@ function loadCoffee(file) {
     if (new java.io.File(cachePath).exists()) {
         var jsCache = read_file(cachePath);
         if (jsCache.indexOf("/*" + coffeeMd5 + "*/") == 0) {
-            plugin.js.eval(jsCache);
+            evalScript(jsCache);
             return;
         }
     }
@@ -261,7 +282,7 @@ function loadCoffee(file) {
     timer.stop();
 
     save_file(cachePath, "/*" + coffeeMd5 + "*/\n/* Compiled in " + timer.seconds + " seconds */\n" + javascript);
-    plugin.js.eval(javascript);
+    evalScript(javascript);
 }
 function loadIcedCoffee(file) {
     var iced_coffee = read_file(file);
@@ -273,7 +294,7 @@ function loadIcedCoffee(file) {
     if (new java.io.File(cachePath).exists()) {
         var jsCache = read_file(cachePath);
         if (jsCache.indexOf("/*" + iced_coffeeMd5 + "*/") == 0) {
-            plugin.js.eval(jsCache);
+            evalScript(jsCache);
             return;
         }
     }
@@ -293,7 +314,8 @@ function loadIcedCoffee(file) {
     timer.stop();
 
     save_file(cachePath, "/*" + iced_coffeeMd5 + "*/\n/* Compiled in " + timer.seconds + " seconds */\n" + javascript);
-    plugin.js.eval(javascript);
+
+    evalScript(javascript);
 }
 function require(lib) {
     var loaded = true;
@@ -328,6 +350,9 @@ function require(lib) {
             }
             loaded = false;
         }
+        if (!loaded) {
+            throw "Couldn't find library '" + lib + "'"
+        }
     } catch (ex) {
         if (ex.rhinoException) {
             ex = ex.rhinoException;
@@ -337,10 +362,6 @@ function require(lib) {
             ex = (ex || {message: "Unknown error"}).message;
         }
         loader.server.broadcast("\xA7cError loading " + lib + ", " + ex, "bukkit.broadcast.admin");
-        throw "Error loading " + lib;
-    }
-    if (!loaded) {
-        throw "Couldn't find library '" + lib + "'"
     }
 }
 function callEvent(handler, event, data) {
