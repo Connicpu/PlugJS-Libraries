@@ -10,7 +10,7 @@ class DisplayNames
   class UserOptions
     constructor: (@player) ->
       @player = @player.name if @player instanceof org.bukkit.entity.Player
-      @player = _s @player
+      @player = _s(@player).toLowerCase()
       unless customization[@player]?
         customization[@player] = {}
         JsPersistence.save()
@@ -72,3 +72,50 @@ class DisplayNames
       event.joinMessage = "\xA7eWelcome \xA7a#{event.player.displayName}\xA7e, who is joining us from \xA7a#{geoip.country.name}"
 
     bukkit_sync -> options.update()
+  registerCommand
+    name: "setdisp",
+    description: "Sets the player's display name or other options.",
+    usage: "\xA7e/<command> <player> <option> <value>"
+    permission: registerPermission("js.setdisp", "op"),
+    permissionMessage: "You do not have sufficient permissions to use that.",
+    aliases: [ "sd" ],
+    (sender, label, args) ->
+      unless args.length > 0
+        sender.sendMessage "\xA7e****Available Options****"
+        sender.sendMessage "\xA7eName, Listcolor, Joinmessage, "
+        sender.sendMessage "\xA7eLeavemessage, Title, Prefix,"
+        sender.sendMessage "\xA7eSuffix, Any other permission option"
+        return false
+
+      return false unless args.length > 1
+
+      playerName = args.splice(0, 1)[0]
+      option = args.splice(0, 1)[0]
+      value = args.join(' ').replace /\&(?=[0-9a-fk-o])/i, '\xA7'
+
+      player = if exactPlayer playerName then exactPlayer playerName else gplr playerName
+      unless player?
+        player = Bukkit.server.getOfflinePlayer playerName
+        throw "Player not found!" unless player.hasPlayedBefore()
+      permPlayer = Permissions::getPlayer(player)
+      player = new UserOptions player.name
+
+      switch option.toLowerCase()
+        when "name"
+          player.name = value
+        when "listcolor"
+          player.listColor = value
+        when "joinmessage"
+          player.joinMessage = value
+        when "leavemessage"
+          player.leaveMessage = value
+        when "title"
+          player.title = value
+        when "prefix"
+          permPlayer.prefix = value
+        when "suffix"
+          permPlayer.suffix = value
+        else
+          permPlayer.getInfo(option).string = value
+
+      sender.sendMessage "\xA76#{option} is now '#{value}\xA76'"
