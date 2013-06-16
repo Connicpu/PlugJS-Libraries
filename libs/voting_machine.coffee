@@ -119,6 +119,8 @@ class VotingMachine
         self.player.sendMessage "\xA7eYou chose #{option.options.label}"
         self.player.sendMessage "\xA7eThank you for voting!"
 
+        JsPersistence.save()
+
       @closeH = registerEvent inventory, 'close', (event) ->
         self.finalize()
         self.player.sendMessage "\xA77Voting cancelled" unless self.voted
@@ -232,12 +234,60 @@ class VotingMachine
             contents[9*rownum + 4] = row[0].item
 
   class @VotingMachine
+    votingMachines = JsPersistence.tryGet "votingMachines", {}
+
     constructor: (@vote, @block) ->
       @key = "#{@block.x},#{@block.y},#{@block.z},#{@block.world.name}"
     @prop 'openCode',
       get: () -> CoffeeScript.compile """
-          
+          machine = votingMachines[#{JSON.stringify(@key)}]
+          machine.vote.show p
         """, bare: yes
+    attach: () ->
+      votingMachines[@key] = @
+      JsPersistence.save()
+
+  class @VotingMachineCreationSession
+    sessions = registerHash "VotingMachineCreationSessions"
+    votingModes = [
+      "YesNo"
+      "SimpleMulti"
+    ]
+
+    constructor: (@player) ->
+      self = @
+      @type = null
+      @options = []
+      @commandHandler = registerEvent player, 'command', (event) -> self.onCommand event
+      @asdf = 'asdf'
+
+    finalize: () ->
+      unregisterEvent player, 'command', @commandHandler
+
+    renderModes: (player) ->
+      player.sendMessage "\xA7eSelect voting mode with /vote mode [mode]"
+      player.sendMessage "\xA7eAvailable modes: "
+      for mode in votingModes
+        player.sendMessage "\xA7e - #{mode}"
+
+    onCommand: (event) ->
+      player = event.player
+      message = _s event.message
+      args = message.split(' ').splice 1
+      return unless /^\/vote\b/i.test message
+
+      unless type?
+        return renderModes player unless /mode/i.test args[0]
+
+    registerCommand
+      name: "votemachine",
+      description: "Attaches code to a block, use {clipboard} with spout to use your clipboard",
+      usage: "\xA7e/<command> <js/cf> [code...]",
+      permission: "js.code.attaching",
+      permissionMessage: "\xA7cLol pwned",
+      aliases: [ "bc" ],
+      (sender, label, args, flags) ->
+
 
 
 testVote = new VotingMachine.SimpleMultiVote [
