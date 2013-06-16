@@ -20,13 +20,12 @@ registerCommand {
 
 registerPermission "js.fun.ride.block", "op"
 registerPermission "js.fun.ride.block.bypass", "op"
-registerCommand {
-    name: "ride"
-    description: "Places you on top of another player"
-    usage: "\xA7eUsage: /<command> <player>"
-    permission: registerPermission("js.fun.ride", "true")
-    permissionMessage: "\xA7cYou don't have permission!"
-  },
+registerCommand
+  name: "ride",
+  description: "Places you on top of another player",
+  usage: "\xA7eUsage: /<command> <player>",
+  permission: registerPermission("js.fun.ride", "true"),
+  permissionMessage: "\xA7cYou don't have permission!",
   (sender, label, args) ->
     unless sender instanceof org.bukkit.entity.Player
       sender.sendMessage "\xA7cConsole can't do that xD"
@@ -41,22 +40,20 @@ registerCommand {
       return
     target.passenger = sender
 
-registerCommand {
-    name: "eject"
-    description: "Gets anything off of you, and gets you out of anything"
-    usage: "\xA7eUsage: /eject"
-  }, 
+registerCommand
+  name: "eject",
+  description: "Gets anything off of you, and gets you out of anything",
+  usage: "\xA7eUsage: /eject", 
   (sender, label, args) ->
     sender.leaveVehicle() if sender.vehicle
     sender.eject() if sender.passenger
 
-registerCommand {
-    name: "give"
-    description: "Gives items!"
-    usage: "\xA7eUsage: /<command> <player> <item[:data]> [amount]"
-    permission: registerPermission "js.fun.give.others", "op"
-    permissionMessage: "\xA7cNo can do, boss."
-  },
+registerCommand
+  name: "give",
+  description: "Gives items!",
+  usage: "\xA7eUsage: /<command> <player> <item[:data]> [amount]",
+  permission: registerPermission "js.fun.give.others", "op",
+  permissionMessage: "\xA7cNo can do, boss.",
   (sender, label, args) ->
     unless args.length >= 2 and args.length <= 3
       return false
@@ -93,17 +90,16 @@ registerCommand {
     player.sendMessage "\xA7eYou were given #{amount} x #{type.toTitleCase()} by #{sender.displayName}"
     sender.sendMessage "\xA7eGiving #{amount} x #{type.toTitleCase()} to #{player.displayName}"
 
-registerCommand {
-    name: "item"
-    description: "Give yourself an item!"
-    usage: "\xA7eUsage: /<command> <item[:data]> [amount]"
-    permission: registerPermission("js.fun.give", "op", [
-      permission: "js.fun.give.others"
-      value: true
-    ])
-    permissionMessage: "\xA7cNo can do, boss."
-    aliases: [ "i" ]
-  },
+registerCommand
+  name: "item",
+  description: "Give yourself an item!",
+  usage: "\xA7eUsage: /<command> <item[:data]> [amount]",
+  permission: registerPermission("js.fun.give", "op", [
+    permission: "js.fun.give.others"
+    value: true
+  ]),
+  permissionMessage: "\xA7cNo can do, boss.",
+  aliases: [ "i" ],
   (sender, label, args) ->
     unless sender instanceof org.bukkit.entity.Player
       sender.sendMessage "\xA7cOnly a player can do that!"
@@ -142,18 +138,17 @@ registerCommand {
     sender.sendMessage "\xA7eGiven #{amount} x #{type.toTitleCase()}"
 
 registerPermission "js.fun.teleport.others", "op"
-registerCommand {
-    name: "tp"
-    description: "Teleport to someone!"
-    usage: "\xA7eUsage: /<command> [-f] [players] <target>"
-    permission: registerPermission("js.fun.teleport", "op", [
-      permission: "js.fun.teleport.others"
-      value: on
-    ])
-    permissionMessage: "\xA7cNo can do, boss."
-    aliases: [ "teleport" ]
-    flags: on
-  },
+registerCommand
+  name: "tp",
+  description: "Teleport to someone!",
+  usage: "\xA7eUsage: /<command> [-f] [players] <target>",
+  permission: registerPermission("js.fun.teleport", "op", [
+    permission: "js.fun.teleport.others"
+    value: on
+  ]),
+  permissionMessage: "\xA7cNo can do, boss.",
+  aliases: [ "teleport" ],
+  flags: on,
   (sender, label, args, flags) ->
     return false unless sender instanceof org.bukkit.entity.Player or args.length > 1
     teleport = if flags.indexOf('f') != -1
