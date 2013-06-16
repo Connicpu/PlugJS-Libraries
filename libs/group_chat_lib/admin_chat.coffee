@@ -16,10 +16,10 @@ adminChat = (event) ->
 
 registerCommand {
     name: "adminchat"
-    description: "Goes to admin chat!"
+    description: "Administrative party chat."
     usage: "\xA7e/<command> [message?]"
     premission: "js.adminchat"
-    permissionMessage: "\xA7cNo can do, boss"
+    permissionMessage: "\xA7cYou do not have sufficient permissions to use that."
     aliases: [ "a" ]
   },
   (sender, label, args) ->

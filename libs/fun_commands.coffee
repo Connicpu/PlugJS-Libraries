@@ -3,7 +3,7 @@ registerCommand {
     description: "Broadcasts into chat as if you were doing the action"
     usage: "\xA7eUsage: /<command> <action>"
     permission: registerPermission("js.fun.me", "true")
-    permissionMessage: "\xA7cYou don't have permission!"
+    permissionMessage: "\xA7cYou do not have sufficient permissions to use that."
   }, 
   (sender, label, args) ->
     message = args.join(" ")

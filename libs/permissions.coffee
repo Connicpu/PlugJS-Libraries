@@ -66,7 +66,7 @@ class Permissions
       if world is undefined
         chatProvider.setPlayerPrefix @player, value
       else if world is null
-        chatProvider['setPlayerPrefix(java.lang.String,java.lang.String)'] world, @player.name, value
+        chatProvider['setPlayerPrefix(java.lang.String,java.lang.String,java.lang.String)'] world, @player.name, value
       else
         chatProvider.setPlayerPrefix world, @player.name, value
 
@@ -79,7 +79,7 @@ class Permissions
       if world is undefined
         chatProvider.setPlayerSuffix @player, value
       else if world is null
-        chatProvider['setPlayerSuffix(java.lang.String,java.lang.String)'] world, @player.name, value
+        chatProvider['setPlayerSuffix(java.lang.String,java.lang.String,java.lang.String)'] world, @player.name, value
       else
         chatProvider.setPlayerSuffix world, @player.name, value
 
