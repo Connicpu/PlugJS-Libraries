@@ -20,16 +20,16 @@ class CodeBlockAttachments
 
   registerCommand
     name: "blockcode",
-    description: "Attaches code to a block, use {clipboard} with spout to use your clipboard",
+    description: "Attaches code to a block, use {clipboard} with spout to use your clipboard.",
     usage: "\xA7e/<command> <js/cf> [code...]",
     permission: "js.code.attaching",
-    permissionMessage: "\xA7cLol pwned",
+    permissionMessage: "\xA7cI say good sir, you appear to be in a spot of bother, but you can not be allowed to continue with this action.",
     aliases: [ "bc" ],
     (sender, label, args, flags) ->
       throw "Only a player can do that!" unless sender instanceof org.bukkit.entity.Player
       if args.length is 0 and attaching[sender.entityId]?
         attaching[sender.entityId] = undefined
-        sender.sendMessage "\xA7cAttachment cancelled"
+        sender.sendMessage "\xA7cAttachment cancelled."
         return
       type = args.splice(0, 1)[0]
       message = args.join ' '

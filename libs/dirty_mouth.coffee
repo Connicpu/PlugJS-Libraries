@@ -5,7 +5,7 @@ replacers = [
   [/fag(g)?(ot|et)?/ig, "bob saget"]
   [/\bdarn/ig, "damn"]
   [/bitch/ig, "bich"]
-  [/.*/, (match) -> match.toSentenceCase()]
+  #[/.*/, (match) -> match.toSentenceCase()]
 ]
 
 cleanMessage = (message) ->

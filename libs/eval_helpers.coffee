@@ -39,7 +39,7 @@ class eval_helpers
     description: "Stops all the threads you've started with js/cf",
     usage: "\xA7e/<command>",
     permission: "js.eval",
-    permissionMessage: "\xA7cNo can do, boss!",
+    permissionMessage: "\xA7cYou do not have sufficient permissions to use that.",
     (sender, label, args) ->
       unless (stack = evalResultStack[sender.name]) and stack.threads and stack.threads.length
         sender.sendMessage "\xA7eNo threads stored"
