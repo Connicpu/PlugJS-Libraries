@@ -23,16 +23,17 @@ registerCommand
   description: "Enchants the item you're holding!",
   usage: "\xA7cUsage: /<command> <enchantment> <level>",
   permission: registerPermission("enchants.enchant", "op"),
-  permissionMessage: "\xA7cI'm sorry dave, but I'm afraid I cannot let you do that", 
+  permissionMessage: "\xA7cYou do not have sufficient permissions to use that.", 
   (sender, label, args) ->
     return false  if args.length isnt 2 or new Number(args[1]) is NaN
     enchant = getEnchant(args[0])
     unless enchant
-      sender.sendMessage "\xA7cCouldn't find an enchantment by that name"
+      sender.sendMessage "\xA7cCouldn't find an enchantment by that name."
       return
     item = sender.itemInHand
     if item.typeId < 1
-      sender.sendMessage "\xA7cYou can't enchant air lol"
+      sender.sendMessage "\xA7cYou attempted to enchant air, however all you got was the sound of your windbag."
       return
     item.addUnsafeEnchantment enchant, new Number(args[1])
+    sender.playSound sender.location, Sound.BURP, 1, 1
     sender.sendMessage "\xA7aEnchanted with " + enchant.name + "!"
