@@ -270,10 +270,10 @@ function loadCoffee(file) {
     log("Compiling coffeescript " + fileName, 'b', 'verbose');
     var javascript;
     try {
-        javascript = read_proc("coffee", "--bare", "--print", "--compile", file);
+        javascript = read_proc(npm_path + "coffee", "--bare", "--print", "--compile", file);
     } catch (ex) {
         try {
-            javascript = read_proc("coffee.cmd", "--bare", "--print", "--compile", file);
+            javascript = read_proc(npm_path + "coffee.cmd", "--bare", "--print", "--compile", file);
         } catch (ex) {
             log("Couldn't find node.js coffeescript compiler, falling back to in-proccess", '7')
             javascript = CoffeeScript.compile(coffee, {bare: true});
@@ -303,10 +303,10 @@ function loadIcedCoffee(file) {
     log("Compiling iced coffee " + fileName, 'b', 'verbose');
     var javascript;
     try {
-        javascript = read_proc("iced", "--bare", "--print", "--compile", file);
+        javascript = read_proc(npm_path + "iced", "--bare", "--print", "--compile", file);
     } catch (ex) {
         try {
-            javascript = read_proc("iced.cmd", "--bare", "--print", "--compile", file);
+            javascript = read_proc(npm_path + "iced.cmd", "--bare", "--print", "--compile", file);
         } catch (ex) {
             throw "Could not compile iced coffee (ensure you have node.js and IcedCoffeeScript installed)"
         }

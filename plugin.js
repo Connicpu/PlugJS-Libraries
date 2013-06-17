@@ -11,7 +11,7 @@ libraries = [
     "chatcolors",
     "noport",
     "safety_first",
-    //"bye_have_a_great_time",
+    "bye_have_a_great_time",
     "code_attachments",
     "display_names",
     "voting_machine"
@@ -65,6 +65,7 @@ function loadLib(lib) {
     load("./plugins/PlugJS/core/" + lib);
 }
 
+loadLib("node-path.js");
 loadLib("js_persistence.js");
 loadLib("lang_helpers.js");
 loadLib("core.js");
