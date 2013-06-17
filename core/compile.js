@@ -12,7 +12,7 @@ NodeCompiler = (function(){
     save_file(__temppath__(mode), code);
   };
   __execproc__ = function(code_type) {
-    var args = [ code_type, "--print", "--bare", "--compile", __temppath__(code_type) ]
+    var args = [ "C:\\Users\\Nathan\\AppData\\Roaming\\npm\\" + code_type, "--print", "--bare", "--compile", __temppath__(code_type) ]
     if (/Windows/i.test(_s(java.lang.System.getProperty("os.name")))) {
       args[0] += ".cmd"
     }

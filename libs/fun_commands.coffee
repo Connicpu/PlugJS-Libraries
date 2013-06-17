@@ -25,18 +25,18 @@ registerCommand
   description: "Places you on top of another player",
   usage: "\xA7eUsage: /<command> <player>",
   permission: registerPermission("js.fun.ride", "true"),
-  permissionMessage: "\xA7cYou don't have permission!",
+  permissionMessage: "\xA7cYou do not have sufficient permissions to use that.",
   (sender, label, args) ->
     unless sender instanceof org.bukkit.entity.Player
-      sender.sendMessage "\xA7cConsole can't do that xD"
+      sender.sendMessage "\xA7cUnable to use this command at Console."
       return
     return false unless args.length is 1
     target = gplr(args[0])
     if target.hasPermission("js.fun.ride.block") and not sender.hasPermission("js.fun.ride.block.bypass")
-      sender.sendMessage "\xA7cYou don't have permission to ride them!"
+      sender.sendMessage "\xA7cYou don't have permission to ride this player."
       return
     if target.name is sender.name
-      sender.sendMessage "\xA7cYou can't ride yourself o.O"
+      sender.sendMessage "\xA7cWhy would you attempt to ride yourself? (Please, don't answer that.)"
       return
     target.passenger = sender
 
@@ -50,10 +50,10 @@ registerCommand
 
 registerCommand
   name: "give",
-  description: "Gives items!",
+  description: "Gives another player an item",
   usage: "\xA7eUsage: /<command> <player> <item[:data]> [amount]",
   permission: registerPermission("js.fun.give.others", "op"),
-  permissionMessage: "\xA7cNo can do, boss.",
+  permissionMessage: "\xA7cYou do not have sufficient permissions to use that.",
   (sender, label, args) ->
     unless args.length >= 2 and args.length <= 3
       return false
@@ -92,16 +92,16 @@ registerCommand
 
 registerCommand
   name: "item",
-  description: "Give yourself an item!",
+  description: "Spawns item(s) to your inventory.",
   usage: "\xA7eUsage: /<command> <item[:data]> [amount]",
   permission: registerPermission("js.fun.give", "op", [
     { permission: "js.fun.give.others", value: true }
   ]),
-  permissionMessage: "\xA7cNo can do, boss.",
+  permissionMessage: "\xA7cYou do not have sufficient permissions to use that.",
   aliases: [ "i" ],
   (sender, label, args) ->
     unless sender instanceof org.bukkit.entity.Player
-      sender.sendMessage "\xA7cOnly a player can do that!"
+      sender.sendMessage "\xA7cYou cannot execute that command from this input field."
       return
 
     unless args.length >= 1 and args.length <= 2
@@ -139,12 +139,12 @@ registerCommand
 registerPermission "js.fun.teleport.others", "op"
 registerCommand
   name: "tp",
-  description: "Teleport to someone!",
+  description: "Teleport yourself to someone.",
   usage: "\xA7eUsage: /<command> [-f] [players] <target>",
   permission: registerPermission("js.fun.teleport", "op", [
     { permission: "js.fun.teleport.others", value: on }
   ]),
-  permissionMessage: "\xA7cNo can do, boss.",
+  permissionMessage: "\xA7cYou do not have sufficient permissions to use that.",
   aliases: [ "teleport" ],
   flags: on,
   (sender, label, args, flags) ->
@@ -161,7 +161,7 @@ registerCommand
     players = if args.length > 1 then selectPlayers args.slice(0, args.length - 1), sender else [ sender ]
 
     unless players.length
-      sender.sendMessage "\xA7cNone of the players listed were found"
+      sender.sendMessage "\xA7cNone of the players listed were found."
       return
 
     target = selectTarget args[args.length - 1], sender
@@ -183,7 +183,7 @@ registerCommand
 
 registerCommand
   name: "ping",
-  description: "A way to tell if the server is responding",
+  description: "Test the server's latency.",
   usage: "\xA7e/<command>",
   aliases: [ "pong" ],
   (sender, label, args) ->
@@ -205,10 +205,10 @@ registerCommand
 
 registerCommand
   name: "spawn",
-  description: "Takes you to your world's spawn",
-  usage: "\xA7e/<command> [player ...]"
+  description: "Takes you to the spawnpoint of the world you are currently in.",
+  usage: "\xA7e/<command>"
   permission: registerPermission("js.fun.spawn", "true"),
-  permissionMessage: "\xA7cNo can do boss",
+  permissionMessage: "\xA7cYou do not have sufficient permissions to use that.",
   aliases: [ "tpspawn" ],
   (sender, label, args) ->
     safeTeleport sender, sender.world.spawnLocation
