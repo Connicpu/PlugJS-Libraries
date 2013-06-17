@@ -82,53 +82,57 @@ class VotingMachine
 
     # Initialize the voting session
     start: () ->
-      # Create an inventory to display the options and allow the player to read what they are voting on
-      @inventory = Bukkit.server.createInventory @player, 9 * @vote.requiredRows(), @title ? "Voting Machine"
-
-      # Populate the inventory from the voting class
-      contents = @inventory.contents
-      @vote.placeInInventory contents
-      @inventory.contents = contents
-
       self = @
 
+      # Create an inventory to display the options and allow the player to read what they are voting on
+      self.inventory = Bukkit.server.createInventory self.player, 9 * self.vote.requiredRows(), self.title ? "Voting Machine"
+
+      # Populate the inventory from the voting class
+      contents = self.inventory.contents
+      self.vote.placeInInventory contents
+      self.inventory.contents = contents
+
       # Register events to handle voting
-      @clickH = registerEvent inventory, 'click', (event) ->
-        return unless event.view.topInventory?
-        return unless event.view.topInventory.title.equals self.inventory.title 
-        return unless event.whoClicked is self.player
-
-        event.cancelled = yes
-
-        return unless event.slot is event.rawSlot and event.slot >= 0
-
-        return unless event.cursor?
-        return unless event.currentItem?.itemMeta?.displayName?
-
-        getOption = () ->
-          for option in self.vote.options
-            return option if option.options.label is _s event.currentItem.itemMeta.displayName
-          return null
-
-        return unless (option = getOption())?
-
-        self.vote.results[self.player.name] = option
-        self.voted = yes
-
-        event.view.close()
-        self.player.sendMessage "\xA7eYou chose #{option.options.label}"
-        self.player.sendMessage "\xA7eThank you for voting!"
-
-        JsPersistence.save()
-
-      @closeH = registerEvent inventory, 'close', (event) ->
-        self.finalize()
-        self.player.sendMessage "\xA77Voting cancelled" unless self.voted
+      self.clickH = registerEvent inventory, 'click', (event) -> self.onClick event, self
+      self.closeH = registerEvent inventory, 'close', (event) -> self.onClose event, self
 
       # Display the inventory to the player
-      @player.openInventory @inventory
+      self.player.openInventory @inventory
 
-      return @
+      return self
+
+    onClick: (event, self) ->
+      return unless event.view.topInventory?
+      return unless event.view.topInventory.title.equals self.inventory.title 
+      return unless event.whoClicked is self.player
+
+      event.cancelled = yes
+
+      return unless event.slot is event.rawSlot and event.slot >= 0
+
+      return unless event.cursor?
+      return unless event.currentItem?.itemMeta?.displayName?
+
+      getOption = () ->
+        for option in self.vote.options
+          return option if option.options.label is _s event.currentItem.itemMeta.displayName
+        return null
+
+      return unless (option = getOption())?
+
+      self.vote.results[self.player.name] = option
+      self.voted = yes
+
+      event.view.close()
+      self.player.sendMessage "\xA7eYou chose #{option.options.label}"
+      self.player.sendMessage "\xA7eThank you for voting!"
+
+      JsPersistence.save()
+
+    onClose: (event, self) ->
+      return unless event.player is self.player
+      self.finalize()
+      self.player.sendMessage "\xA77Voting cancelled" unless self.voted
 
     # Unregister the events
     finalize: () ->
