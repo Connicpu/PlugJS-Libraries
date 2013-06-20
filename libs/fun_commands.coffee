@@ -206,9 +206,18 @@ registerCommand
 registerCommand
   name: "spawn",
   description: "Takes you to the spawnpoint of the world you are currently in.",
-  usage: "\xA7e/<command>"
+  usage: "\xA7e/<command>",
   permission: registerPermission("js.fun.spawn", "true"),
   permissionMessage: "\xA7cYou do not have sufficient permissions to use that.",
   aliases: [ "tpspawn" ],
   (sender, label, args) ->
     safeTeleport sender, sender.world.spawnLocation
+
+registerCommand
+  name: "testderp",
+  description: "Nyoung's CF test"
+  usage: "\xA7e/<command>",
+  permission: registerPermission("js.fun.derptest", "true"),
+  permissionMessage: "\xA7cWhat are you doing??",
+  (sender, label, args) ->
+    sender.chat("Testing to see if I did this right...")
