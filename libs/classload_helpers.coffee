@@ -10,6 +10,24 @@ String.prop 'plugin', get: () -> getPlugin @
 cls =
   toString: () ->
     output = ""
-    for i in [1..100]
-      output += " \n"
+    output += " \n" for i in [1..100]
     output
+
+class EventHandler
+  class EventRegistration
+    constructor: (@handler, @name, @cancellationToken) ->
+    unregister: -> unregisterEvent @handler, @name, @cancellationToken
+
+  constructor: () -> 
+    @registeredHandlers = []
+    @onRegister()
+
+  register: (handler, name, event) ->
+    self = @
+    cancellationToken = registerEvent handler, name, -> event.apply(self, arguments)
+    registration = new EventRegistration handler, name, cancellationToken
+    @registeredHandlers.push registration
+
+  onRegister: ->
+
+  finalize: -> registration.unregister() for registration in @registeredHandlers
