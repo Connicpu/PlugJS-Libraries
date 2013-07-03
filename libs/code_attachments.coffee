@@ -65,6 +65,7 @@ class CodeBlockAttachments
       JsPersistence.save()
       event.player.sendMessage "\xA76Code attached to #{block.type} @ data=#{block.data}, x=#{block.x}, y=#{block.y}, z=#{block.z}"
       attaching[event.player.entityId] = undefined
+      event.cancelled = yes
       return
 
     attachment = getMetadata block, "CodeBlockAttachment", plugin
@@ -79,14 +80,16 @@ class CodeBlockAttachments
       en: org.bukkit.entity
 
     try
-      evalInContext attachment.asString(), ext
+      if (evalInContext attachment.asString(), ext) == no
+        event.cancelled = yes
     catch error
+      event.cancelled = yes
       if typeof error is 'string'
         event.player.sendMessage "\xA7c#{error}"
       else
         log "#{error}", 'c'
 
-  @::AttachCode = (block, code) ->
+  AttachCode: (block, code) ->
     attachment = new org.bukkit.metadata.FixedMetadataValue plugin, codeblock.setMetadata "CodeBlockAttachment", attachment
     cacheKey = "#{block.x},#{block.y},#{block.z},#{block.world.name}"
     codeCache[cacheKey] = _s attachment.asString()

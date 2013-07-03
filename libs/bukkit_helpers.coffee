@@ -5,6 +5,8 @@ require 'minecraft_items'
 require 'time_helpers'
 require 'bukkit_safety_checks'
 try require 'action_queue'
+require 'player_input'
+require 'clans'
 
 incrementBlockId = (block) ->
   id = block.typeId
@@ -259,4 +261,5 @@ createItemMeta = (baseType, func) ->
   func(meta)
   meta
 
+require 'entity_markers'
 require 'spout_helpers' if getPlugin "Spout"
