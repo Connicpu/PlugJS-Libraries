@@ -227,29 +227,40 @@ class FunCommands
       for player in _a Bukkit.server.onlinePlayers
         player.kickPlayer(args.join ' ') unless player.hasPermission "js.kickall.override" 
 
-  registerPermission "js.muteall.override", "op"
-  registerPermission "js.muteall", "op"
-
-  mutedPlayers = registerHash "muted_players"
-
   registerCommand
-    name: "muteall",
-    description: "mute all players on the server",
-    usage: "\xA7e/<command> [-fu]",
-    permission: "js.muteall",
-    permissionMessage: "\xA7cYou do not have sufficient permission to do that",
-    flags: on,
-    (sender, label, args, flags) ->
+    name: "censor",
+    description: "Displays information about the chat censor",
+    usage: "\xA7e/<command>",
+    permission: "js.censor.info",
+    permissionMessage: "\xA7cNo can do, buckaroo",
+    (sender, label, args) ->
+      sender.sendMessage "\xA7c[CHAT CENSOR INFORMATION]"
+      sender.sendMessage "\xA7bCensor definitions created by Nathan, please contact Nyoung3 if you wish to propose a change or addition."
 
-      if flags.indexOf('u') is -1
-        for player in _a Bukkit.server.onlinePlayers
-          unless player.hasPermission 'js.muteall.override' or flags.indexOf('f') is -1
-            mutedPlayers[player.name.toLowerCase()] = yes
-            player.sendMessage "\xA7e#{sender.name} has muted the server."
-      else
-        for player in _a Bukkit.server.onlinePlayers
-          mutedPlayers[player.name.toLowerCase()] = no
 
-  registerEvent player, 'chat', (event) ->
-    for player in _a event.recipients
-      event.recipients.remove player if mutedPlayers[player.name.toLowerCase()]
+#  registerPermission "js.muteall.override", "op"
+#  registerPermission "js.muteall", "op"
+#
+#  mutedPlayers = registerHash "muted_players"
+#
+#  registerCommand
+#    name: "muteall",
+#    description: "mute all players on the server",
+#    usage: "\xA7e/<command> [-fu]",
+#    permission: "js.muteall",
+#    permissionMessage: "\xA7cYou do not have sufficient permission to do that",
+#    flags: on,
+#    (sender, label, args, flags) ->
+#
+#     if flags.indexOf('u') is -1
+#       for player in _a Bukkit.server.onlinePlayers
+#          unless player.hasPermission 'js.muteall.override' or flags.indexOf('f') is -1
+#            mutedPlayers[player.name.toLowerCase()] = yes
+#            player.sendMessage "\xA7e#{sender.name} has muted the server."
+#      else
+#        for player in _a Bukkit.server.onlinePlayers
+#          mutedPlayers[player.name.toLowerCase()] = no
+#
+#  registerEvent player, 'chat', (event) ->
+#    for player in _a event.recipients
+#      event.recipients.remove player if mutedPlayers[player.name.toLowerCase()]
