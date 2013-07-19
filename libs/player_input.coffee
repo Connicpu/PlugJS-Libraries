@@ -36,6 +36,13 @@ class PlayerInput
       @finalize()
 
   class BookSession extends EventHandler
+    constructor: (@player, @message, @callback) ->
+      throw "Only a player can do that" unless @player instanceof org.bukkit.entity.Player
+      @player.sendMessage "\xA7e#{message}"
+      @player.sendMessage "\xA7eType /cancel to escape"
+      super()
+
+    
 
   awaitChatMessage: (player, message, finished, validCallback) ->
     new ChatbarSession player, message, (event) ->
