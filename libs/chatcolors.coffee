@@ -26,10 +26,13 @@ registerEvent player, "chat", (event) ->
   message = message.replace /\&(?=[k])/gi, '\xA7' if event.player.hasPermission "js.chat.magic"
   message = message.replace /\&(?=[l-o])/gi, '\xA7' if event.player.hasPermission "js.chat.effects"
 
+  message = message.replace /^\>/, '\xA72>'
+
   event.message = message
 
 registerEvent js, "chatFormat", (event) ->
   playerInfo = Permissions::getPlayer(event.player)
-  event.prefix = playerInfo.prefix.replace /\&(?=[0-9a-fk-o])/i, '\xA7'
-  event.suffix = playerInfo.suffix.replace /\&(?=[0-9a-fk-o])/i, '\xA7'
-  event.clantag = playerInfo.getInfo('clantag', '').string.replace /\&(?=[0-9a-fk-o])/i, '\xA7'
+  event.prefix = playerInfo.prefix.replace /\&(?=[0-9a-fk-o])/gi, '\xA7'
+  event.suffix = playerInfo.suffix.replace /\&(?=[0-9a-fk-o])/gi, '\xA7'
+  event.clantag = playerInfo.getInfo('clantag', '').string.replace /\&(?=[0-9a-fk-o])/gi, '\xA7'
+  event.chatcolor = "\xA7#{playerInfo.getInfo('chatcolor', 'f').string}"

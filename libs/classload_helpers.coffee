@@ -5,7 +5,13 @@ loadClass = (classPath) ->
       constructors = classInfo.constructors
       throw "No known constructors" if constructors.length == 0
       
-String.prop 'plugin', get: () -> getPlugin @
+String.prop 'plugin', get: () -> getPlugin _s @
+String.prop 'reloadPlugin', 
+  get: -> 
+    -> 
+      Bukkit.server.pluginManager.disablePlugin @
+      Bukkit.server.pluginManager.enablePlugin @
+      yes
 
 cls =
   toString: () ->

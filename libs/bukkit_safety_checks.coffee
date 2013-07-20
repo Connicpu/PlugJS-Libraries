@@ -9,11 +9,13 @@ class GroundFinder
   closeCacheItem = (location, distance) ->
     for k,v of safeSpotCache
       continue unless v?
+      continue unless v.world is location.world
       return v if v.distance(location) < distance
     null
   closeCacheItems = (location, distance) ->
     for k,v of safeSpotCache
       continue unless v?
+      continue unless v.world is location.world
       v if v.distance(location) < distance
 
   class CacheItem
@@ -25,7 +27,7 @@ class GroundFinder
       ]
       dists.sort (a, b) -> a - b
       return dists[0]
-    @prop 'hashCode', get: () -> "#{@location.block.x},#{@location.block.y},#{@location.block.z}"
+    @prop 'hashCode', get: () -> "#{@location.block.x},#{@location.block.y},#{@location.block.z},#{@location.world.name}"
 
   GroundFinder::suitableGround = (location) ->
     distances = []
@@ -48,7 +50,7 @@ class GroundFinder
     return false if distances.length < 1
 
     distances.sort (a, b) ->
-      a.distance - b.distance
+      return a.distance - b.distance
 
     distances[0].location.x += 0.5;
     distances[0].location.z += 0.5;
@@ -56,6 +58,7 @@ class GroundFinder
     cacheItem = new CacheItem location, distances[0].location
     safeSpotCache[cacheItem.hashCode] = cacheItem
     return distances[0].location
+
   GroundFinder::locationSafe = (location) ->
     location = location.clone().block.location
 

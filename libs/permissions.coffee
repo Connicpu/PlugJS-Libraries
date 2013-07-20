@@ -116,8 +116,8 @@ class Permissions
 
     getInfo: (node, def, world) -> if world? then new PlayerOptionInfoWithWorld @, node, world, def else new PlayerOptionInfoNoWorld @, node, def
 
-    @prop 'primaryGroup', get: () -> getPrimaryGroup null
-    @prop 'groups', get: () -> getGroups null
+    @prop 'primaryGroup', get: () -> @getPrimaryGroup null
+    @prop 'groups', get: () -> _a @getGroups null
     @prop 'prefix',
       get: () -> _s @getPrefix null
       set: (value) -> @setPrefix value, null
@@ -125,3 +125,10 @@ class Permissions
       get: () -> _s @getSuffix null
       set: (value) -> @setSuffix value, null
 
+  @::promote = (user) ->
+    perm = Permissions::getPlayer(user)
+    group = _s perm.groups[0]
+    throw "You've already accepted the rules :P" unless group is 'default'
+    perm.removeGroup group
+    perm.addGroup 'Member'
+    Bukkit.server.broadcastMessage "\xA7eThe player \xA7b#{user.displayName}\xA7e is now a \xA7bMember\xA7e ^.^"

@@ -34,3 +34,4 @@ registerCommand {
     adminChatList[sender.name] = true
     sender.chat(message)
     adminChatList[sender.name] = isAChat
+    yes

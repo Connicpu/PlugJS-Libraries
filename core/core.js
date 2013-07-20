@@ -208,6 +208,14 @@ function registerCommand(data, func) {
     log ("Registering new command '" + data.name + "'", 'e', 'verbose');
     loader.server.commandMap.register("js", newCommand());
 }
+function unregisterCommand(name) {
+    var list = _a(loader.server.commandMap.commands);
+    for (var i = 0; i < list.length; ++i) {
+        if (_s(list[i].name) == name) {
+            loader.server.commandMap.commands.remove(list[i]);
+        }
+    }
+}
 function createHexString(arr) {
     var result = "";
     for (i in arr) {

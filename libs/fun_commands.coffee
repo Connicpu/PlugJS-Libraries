@@ -175,11 +175,11 @@ class FunCommands
     { permission: "js.fun.teleport", value: on }
   ])
 
-  registerCommand
-    name: "bring",
-    description: "Go to and be brought by other players",
-    aliases: [ "call" ],
-    (sender, label, args) ->
+  #registerCommand
+  #  name: "bring",
+  #  description: "Go to and be brought by other players",
+  #  aliases: [ "call" ],
+  #  (sender, label, args) ->
       
 
   registerCommand

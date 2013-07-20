@@ -8,6 +8,10 @@ try require 'action_queue'
 require 'player_input'
 require 'clans'
 
+registerEvent entity, 'damageByEntity', (event) ->
+  return unless event.entity instanceof org.bukkit.entity.Player and event.damager instanceof org.bukkit.entity.Player
+  event.cancelled = yes
+
 incrementBlockId = (block) ->
   id = block.typeId
   unless Material.getMaterial(++id)?
