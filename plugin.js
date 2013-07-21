@@ -16,7 +16,8 @@ libraries = [
     "display_names",
     "voting_machine",
     "motd",
-    "creative_plots"
+    "creative_plots",
+    "dont_leave_early!"
 ];
 var debug_messages = true;
 

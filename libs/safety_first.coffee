@@ -15,6 +15,13 @@ class safety_first
     return unless event.source.type == Material.FIRE
     event.cancelled = true
 
+  # Anti-void-falling
+  registerEvent player, "move", (event) ->
+    blacklist_worlds = [ "world_the_end" ]
+    return unless blacklist_worlds.indexOf(_s event.player.world.name) is -1
+    return unless event.player.location.y < 0
+    event.player.teleport event.player.world.spawnLocation
+
 class MagicalFires
   MagicalFires::magicalFire = createItemMeta 1, (meta) ->
     meta.displayName = "\xA76\xA7oMagical Fire"
