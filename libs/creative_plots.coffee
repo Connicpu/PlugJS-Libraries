@@ -15,6 +15,8 @@ class CreativePlots
     { depth: 18, material: 3 }
     { depth: 1, center_material: 44, edge_material: 43 }
     { depth: 3, center_material: 0,  edge_material: 85, breakAtCenter: 2 }
+    { depth: 1, center_material: 0,  edge_material: 85 }
+    { depth: 1, material: 85 }
     { depth: 1, material: 20 }
     { depth: 255, material: 0, cleanGenOnly: yes }
   ]
@@ -232,6 +234,8 @@ class CreativePlots
           log 'derp'
 
         y += mat.depth
+
+    'Hooray!'
 
 class SpecialUsers
   @::veterans = JSON.parse read_file "./js/veterans.json"
