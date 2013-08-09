@@ -9,8 +9,8 @@ String.prop 'plugin', get: () -> getPlugin _s @
 String.prop 'reloadPlugin', 
   get: -> 
     -> 
-      Bukkit.server.pluginManager.disablePlugin @
-      Bukkit.server.pluginManager.enablePlugin @
+      Bukkit.server.pluginManager.disablePlugin @.plugin
+      Bukkit.server.pluginManager.enablePlugin @.plugin
       yes
 
 cls =
@@ -37,3 +37,9 @@ class EventHandler
   onRegister: ->
 
   finalize: -> registration.unregister() for registration in @registeredHandlers
+
+getField = (obj, member) ->
+  field = obj.class.getDeclaredField member
+  unless field.modifiers & java.lang.reflect.Modifiers.PUBLIC
+    field.accessible = yes
+  field.get obj

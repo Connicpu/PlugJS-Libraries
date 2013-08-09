@@ -72,6 +72,15 @@ class DisplayNames
       event.joinMessage = "\xA7eWelcome \xA7a#{event.player.displayName}\xA7e, who is joining us from \xA7a#{geoip.country.name}"
 
     bukkit_sync -> options.update()
+
+  registerEvent player, 'quit', (event) ->
+    options = new UserOptions event.player.name
+
+    if options.leaveMessage?
+      event.quitMessage = options.leaveMessage
+    else
+      event.quitMessage = "\xA7a#{event.player.displayName}\xA7e has left the game!"
+
   registerCommand
     name: "setdisp",
     description: "Sets the player's display name or other options.",

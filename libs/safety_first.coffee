@@ -20,7 +20,16 @@ class safety_first
     blacklist_worlds = [ "world_the_end" ]
     return unless blacklist_worlds.indexOf(_s event.player.world.name) is -1
     return unless event.player.location.y < 0
-    event.player.teleport event.player.world.spawnLocation
+    event.player.fallDistance = 0
+    home = CommandBook.getHome(event.player)
+    bed = event.player.bedSpawnLocation
+
+    if home? and home.location.world.equals event.player.world
+      home.teleport event.player
+    else if bed? and bed.world.equals event.player.world
+      event.player.teleport bed
+    else
+      event.player.teleport event.player.world.spawnLocation
 
 class MagicalFires
   MagicalFires::magicalFire = createItemMeta 1, (meta) ->

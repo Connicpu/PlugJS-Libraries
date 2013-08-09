@@ -17,7 +17,12 @@ libraries = [
     "voting_machine",
     "motd",
     "creative_plots",
-    "dont_leave_early!"
+    "dont_leave_early!",
+    "return_my_pets",
+    "commandbook",
+    "private_warps",
+    "code_items",
+    "antispam"
 ];
 var debug_messages = true;
 
@@ -80,6 +85,7 @@ loadLib("iced.js");
 loadLib("icedlib.js");
 loadLib("econ.js");
 loadLib("metadata.js");
+getPlugin("PlugJS").js.eval(read_file("./plugins/PlugJS/core/linq.js"))
 
 iced = exports.iced;
 

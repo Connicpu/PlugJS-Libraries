@@ -35,7 +35,7 @@ class GroundFinder
     cacheItem = closeCacheItem location, 2
     return cacheItem.safeSpot if cacheItem
 
-    for y in [location.y - 3 .. location.y + 5]
+    for y in [location.y - 3 .. location.y + 2]
       for x in [location.x - 2 .. location.x + 2]
         for z in [location.z - 2 .. location.z + 2]
           loc = cloneLocation location,

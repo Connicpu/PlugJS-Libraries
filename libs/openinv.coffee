@@ -1,0 +1,3 @@
+registerCommand
+  name: "openinventory",
+  

@@ -18,7 +18,7 @@ class Permissions
 
   class PlayerInfo
     constructor: (@player) ->
-      @player = (gplr @player || Bukkit.server.getOfflinePlayer @player) unless @player instanceof org.bukkit.command.CommandSender
+      @player = (gplr(@player) ? Bukkit.server.getOfflinePlayer @player) unless @player instanceof org.bukkit.command.CommandSender
     getGroups: (world) ->
       unless world?
         permissionProvider.getPlayerGroups @player

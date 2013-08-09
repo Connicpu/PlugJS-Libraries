@@ -17,7 +17,7 @@ getEnchant = (name) ->
   return org.bukkit.enchantments.Enchantment.LOOT_BONUS_BLOCKS  if /fortune/i.test(name)
   return org.bukkit.enchantments.Enchantment.DIG_SPEED  if /dig|effic/i.test(name)
   return org.bukkit.enchantments.Enchantment.SILK_TOUCH  if /silk/i.test(name)
-  org.bukkit.enchantments.Enchantment.DURABILITY  if /dura|unbreak/i.test(name)
+  return org.bukkit.enchantments.Enchantment.DURABILITY  if /dura|unbreak/i.test(name)
 registerCommand
   name: "enchant",
   description: "Enchants the item you're holding!",

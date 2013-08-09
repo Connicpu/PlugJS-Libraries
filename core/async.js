@@ -43,9 +43,11 @@ bukkit_sync = function(fn, callback, delay, args) {
   }
   task = Runnable(function() {
     var result = fn.apply(this, args);
-    return async(function() {
-      return callback(result);
-    });
+    if (callback) {
+      return async(function() {
+        return callback(result);
+      });
+    }
   });
   return Bukkit.server.scheduler.scheduleSyncDelayedTask(plugin, task, delay);
 };

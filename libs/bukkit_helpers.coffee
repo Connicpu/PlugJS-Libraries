@@ -12,6 +12,37 @@ registerEvent entity, 'damageByEntity', (event) ->
   return unless event.entity instanceof org.bukkit.entity.Player and event.damager instanceof org.bukkit.entity.Player
   event.cancelled = yes
 
+class AfkTime
+  times = registerHash 'afk_times'
+  for: (player) ->
+    time = (TimeSpan::now - times[player.entityId]).milliseconds
+    "#{time.to_minutes} and #{(time.to_seconds.value % 60).seconds}"
+  onPlayerEvent: (event) ->
+    times[event.player.entityId] = TimeSpan::now
+
+  registerEvent player, 'move', AfkTime::onPlayerEvent
+  registerEvent player, 'chat', AfkTime::onPlayerEvent
+  registerEvent player, 'command', AfkTime::onPlayerEvent
+
+doOnTicks = (ticks, fn) ->
+  class TickEvent
+    constructor: (fn) ->
+      @cb = registerEvent spout, 'tick', fn
+    done: -> unregisterEvent spout, 'tick', @cb
+
+  tickMod = 0
+  new TickEvent ->
+    return if ++tickMod % ticks
+    fn()
+
+gplra = (playername) ->
+  playername = new java.lang.String playername
+  matches = for player in _s Bukkit.server.onlinePlayers
+    name = player.name
+    disp = ChatColor.stripColor player.displayName
+    if playername.startsWith(name) or playername.startsWith(disp) then player else continue
+  matches
+
 incrementBlockId = (block) ->
   id = block.typeId
   unless Material.getMaterial(++id)?
@@ -90,7 +121,7 @@ kill = (entity) ->
   true
 heal = (entity) ->
   entity = gplr entity if typeof entity == 'string'
-
+  return unless entity instanceof org.bukkit.entity.LivingEntity
   entity.health = entity.maxHealth
 
 boolOnOff = (bool) ->
@@ -267,3 +298,18 @@ createItemMeta = (baseType, func) ->
 
 require 'entity_markers'
 require 'spout_helpers' if getPlugin "Spout"
+
+class AutoSave
+  save_rate = 5.minutes.of.ticks
+  tick_pos = registerHash("auto_save_pos")
+  tick_pos.pos ?= 1
+
+  registerEvent spout, 'tick', ->
+    return unless (tick_pos.pos++ % save_rate) is 0
+    tick_pos.pos -= save_rate
+    Bukkit.server.broadcastMessage "\xA77\xA7oSaving the map..."
+
+    for world in _a Bukkit.server.worlds
+      world.save()
+
+    Bukkit.server.broadcastMessage "\xA77\xA7oSave complete"

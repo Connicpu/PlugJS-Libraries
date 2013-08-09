@@ -60,6 +60,9 @@ class FunCommands
         return false
 
       player = gplr(args[0])
+
+      throw "Player not found" unless player?
+
       amount = 1
       data = 0
 
@@ -70,14 +73,13 @@ class FunCommands
       else getItemId(args[1])
       throw "Can't find item '#{args[1]}'" if itemId == -1
 
-      itemId = org.bukkit.Material.getMaterial itemId
+      itemId = Material['getMaterial(int)'] itemId
 
       data = new ItemColor(data, itemId).value
 
       amount = args[2] if args[2]
 
       item = itemStack(itemId, amount, data)
-
       player.inventory.addItem [ item ]
 
       amount = 'Infinite' if amount < 0
@@ -141,7 +143,7 @@ class FunCommands
   registerCommand
     name: "tp",
     description: "Teleport yourself to someone.",
-    usage: "\xA7eUsage: /<command> [-f] [players] <target>",
+    usage: "\xA7eUsage: /<command> [-s] [players] <target>",
     permission: registerPermission("js.fun.teleport", "op", [
       { permission: "js.fun.teleport.others", value: on }
     ]),
@@ -150,14 +152,14 @@ class FunCommands
     flags: on,
     (sender, label, args, flags) ->
       return false unless sender instanceof org.bukkit.entity.Player or args.length > 1
-      teleport = if flags.indexOf('f') != -1
+      teleport = if flags.indexOf('s') != -1
         (entity, location) -> 
-          entity.sendMessage "\xA7eTeleported!"
-          entity.teleport location
-      else
-        (entity, location) ->
           safeTeleport entity, location
           entity.sendMessage "\xA7eTeleported!"
+      else
+        (entity, location) ->
+          entity.sendMessage "\xA7eTeleported!"
+          entity.teleport location
 
       players = if args.length > 1 then selectPlayers args.slice(0, args.length - 1), sender else [ sender ]
 
@@ -204,15 +206,18 @@ class FunCommands
       throw "Only a player can do that" unless sender instanceof org.bukkit.entity.Player
       sender.world.setSpawnLocation sender.location.x, sender.location.y, sender.location.z
 
-  registerCommand
-    name: "spawn",
-    description: "Takes you to the spawnpoint of the world you are currently in.",
-    usage: "\xA7e/<command>",
-    permission: registerPermission("js.fun.spawn", "true"),
-    permissionMessage: "\xA7cYou do not have sufficient permissions to use that.",
-    aliases: [ "tpspawn" ],
-    (sender, label, args) ->
-      safeTeleport sender, sender.world.spawnLocation
+   #registerCommand
+   # name: "spawn",
+   # description: "Takes you to the spawnpoint of the world you are currently in.",
+   # usage: "\xA7e/<command>",
+   # permission: registerPermission("js.fun.spawn", "true"),
+   # permissionMessage: "\xA7cYou do not have sufficient permissions to use that.",
+   # aliases: [ "tpspawn" ],
+   # (sender, label, args) ->
+   #   safeTeleport sender, sender.world.spawnLocation
+
+  registerEvent player, 'command', (event) ->
+    event.message = "/mv spawn" if /^\/spawn$/i.test(event.message)
 
   registerPermission "js.kickall.override", "op"
   registerPermission "js.kickall", "op"
@@ -236,7 +241,6 @@ class FunCommands
     (sender, label, args) ->
       sender.sendMessage "\xA7c[CHAT CENSOR INFORMATION]"
       sender.sendMessage "\xA7bCensor definitions created by Nathan, please contact Nyoung3 if you wish to propose a change or addition."
-
 
 #  registerPermission "js.muteall.override", "op"
 #  registerPermission "js.muteall", "op"
