@@ -42,8 +42,6 @@ class PlayerInput
       @player.sendMessage "\xA7eType /cancel to escape"
       super()
 
-    
-
   awaitChatMessage: (player, message, finished, validCallback) ->
     new ChatbarSession player, message, (event) ->
       if event.cancelled
@@ -52,3 +50,4 @@ class PlayerInput
         player.sendMessage "\xA77>> #{event.message}"
         validCallback event
       finished event if event.valid
+

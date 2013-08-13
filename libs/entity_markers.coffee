@@ -22,4 +22,14 @@ registerEvent entity, 'creatureSpawn', (event) ->
   reasonMeta = new org.bukkit.metadata.FixedMetadataValue plugin, new java.lang.String reason
   legitMeta = new org.bukkit.metadata.FixedMetadataValue plugin, new java.lang.Boolean legit
 
+  event.entity.setMetadata("SpawnReason", reasonMeta)
+  event.entity.setMetadata("IsSpawnLegit", legitMeta)
+
+class NerfMobfarms
+  registerEvent entity, 'death', (event) ->
+    legits = event.entity.getMetadata "IsSpawnLegit"
+    return if legits.empty
+    legit = Enumerable.From(_a legits).First().asBoolean()
+    event.drops.clear() unless legit
+
 

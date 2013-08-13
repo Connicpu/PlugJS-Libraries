@@ -5,6 +5,24 @@ class CreativePlots
   plot_ownerships = JsPersistence.tryGet 'creative_plots', {}
   plot_height = 20
   all_builds = registerHash 'all_builds'
+  class PlotRules
+    class Rule extends EventHandler
+      constructor: (@options) ->
+        @onMove = @options.onMove
+      onRegister: ->
+        @register player, 'move', @_onMove
+      _onMove: (event) -> @onMove? event
+
+    rules:
+      "no-flight": new Rule
+        onMove: (event) ->
+          return unless event.player.allowFlight is yes
+          event.player.allowFlight = no
+      "no-creative": new Rule
+        onMove: (event) ->
+          return unless event.player.gameMode is GameMode.CREATIVE
+          event.player.gameMode = GameMode.SURVIVAL
+
 
   @Ownerships = plot_ownerships
 
@@ -97,31 +115,40 @@ class CreativePlots
     @GetHashCode = (x,y) -> "#{x},#{y},#{plot_world}"
     @prop 'hashCode', 
       get: -> CreativePlots.PlotOwnership.GetHashCode @x, @y
+    @prop 'center',
+      get: -> CreativePlots::GetPlotCenter @x, @y
     placeSigns: (worldEdit, player) ->
       return unless @isClaimed
       @ownership.renderSigns worldEdit, player
-    getPlotForLocation: (location) ->
+    getPlotForLocation: (location, block = no) ->
       return null unless location.world.name.equalsIgnoreCase plot_world
 
       lx = location.x
       ly = location.z
 
+      if block
+        lx -= 0.5
+        ly -= 0.5
+
       mod_dist = plot_size + road_size
-      half_min = 0.51 - (1 / mod_dist) * (road_size / 2)
-      half_max = 0.49 + (1 / mod_dist) * (road_size / 2)
+      plot_radius = plot_size / 2
 
       sx = lx / mod_dist
       sy = ly / mod_dist
 
-      x_1mod = Math.abs sx % 1
-      y_1mod = Math.abs sy % 1
-
-      return null if (half_min < x_1mod < half_max) or (half_min < y_1mod < half_max)
-
       x = Math.round(sx)
       y = Math.round(sy)
 
-      new CreativePlots.Plot x, y
+      plot = new CreativePlots.Plot x, y
+      center = plot.center
+
+      xdist = Math.abs(lx - center.x)
+      ydist = Math.abs(ly - center.z)
+
+      return null if xdist >= plot_radius or ydist >= plot_radius
+
+      plot
+
     claimForPlayer: (name) ->
       ownership = new CreativePlots.PlotOwnership @x, @y, _s name
       plot_ownerships[ownership.hashCode] = ownership
@@ -134,7 +161,7 @@ class CreativePlots
       return if all_builds[event.player.name]
       return unless event.block.location.world.name.equalsIgnoreCase plot_world
 
-      plot = CreativePlots.Plot::getPlotForLocation event.block.location
+      plot = CreativePlots.Plot::getPlotForLocation event.block.location, yes
       name = _s event.player.name
       unless plot? and plot.isClaimed
         event.cancelled = yes
@@ -175,7 +202,7 @@ class CreativePlots
         plot = null
 
         for hash, the_plot of plot_ownerships
-          continue unless the_plot.owner is user
+          continue unless the_plot.owner.toLowerCase() is user.toLowerCase()
           continue if --skip
           plot = the_plot
 

@@ -77,7 +77,10 @@ function registerEvent(handler, eventname, callback) {
                     callbacks[i](event);
                     if (event.cancelled) return;
                 } catch (ex) {
-                    log(ex)
+                    if (event instanceof org.bukkit.event.player.PlayerEvent && typeof(ex) === 'string') {
+                        event.player.sendMessage(ex);
+                    }
+                    log(ex);
                 }
             }
         };

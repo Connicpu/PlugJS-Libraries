@@ -7,10 +7,8 @@ require 'bukkit_safety_checks'
 try require 'action_queue'
 require 'player_input'
 require 'clans'
-
-registerEvent entity, 'damageByEntity', (event) ->
-  return unless event.entity instanceof org.bukkit.entity.Player and event.damager instanceof org.bukkit.entity.Player
-  event.cancelled = yes
+require 'entity_markers'
+require 'respawns'
 
 class AfkTime
   times = registerHash 'afk_times'
@@ -34,6 +32,10 @@ doOnTicks = (ticks, fn) ->
   new TickEvent ->
     return if ++tickMod % ticks
     fn()
+
+sendMessageTo = (players, message) ->
+  for player in players
+    player.sendMessage message
 
 gplra = (playername) ->
   playername = new java.lang.String playername

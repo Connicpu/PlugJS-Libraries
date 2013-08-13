@@ -17,12 +17,12 @@ money_drop_rates =
     chance: 50
 
   Monster:
-    base: 3
+    base: 6
     variance: 1
     chance: 90
 
   Creeper:
-    base: 7
+    base: 14
     variance: 2
     chance: 94
 
@@ -32,7 +32,7 @@ money_drop_rates =
     chance: 100
 
   Enderman:
-    base: 10
+    base: 20
     variance: 0
     chance: 100
 

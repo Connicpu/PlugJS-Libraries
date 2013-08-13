@@ -242,6 +242,31 @@ class FunCommands
       sender.sendMessage "\xA7c[CHAT CENSOR INFORMATION]"
       sender.sendMessage "\xA7bCensor definitions created by Nathan, please contact Nyoung3 if you wish to propose a change or addition."
 
+  class NetherLightSession extends EventHandler
+    constructor: (@player) ->
+      super()
+    onRegister: ->
+      @register player, 'interact', @onInteract
+    onInteract: (event) ->
+      return unless event.player is @player
+      return unless event.action is event.action.RIGHT_CLICK_BLOCK
+      @finalize()
+
+      block = event.clickedBlock
+      upperblock = block.getRelative org.bukkit.block.BlockFace.UP
+      throw "That's not obsidian xD" unless block.type is Material.OBSIDIAN
+      throw "That's not the bottom block ._." unless upperblock.type is Material.AIR
+      upperblock.type = Material.FIRE
+
+  registerCommand
+    name: "netherlight",
+    description: "Lights your nether portal!",
+    usage: "/<command>",
+    aliases: [ "/nl", "nlight", "netlit" ],
+    (sender, label, args) ->
+      sender.sendMessage "\xA79Right click a bottom-center obsidian block to light your portal!"
+      new NetherLightSession sender
+
 #  registerPermission "js.muteall.override", "op"
 #  registerPermission "js.muteall", "op"
 #

@@ -22,7 +22,8 @@ libraries = [
     "commandbook",
     "private_warps",
     "code_items",
-    "antispam"
+    "antispam",
+    "pvp"
 ];
 var debug_messages = true;
 
@@ -66,6 +67,8 @@ var spout = {
 };
 var exports = {
 };
+var window = this;
+
 var iced;
 var CoffeeScript;
 function loadLib(lib) {
@@ -74,8 +77,9 @@ function loadLib(lib) {
 }
 
 loadLib("node-path.js");
-loadLib("js_persistence.js");
 loadLib("lang_helpers.js");
+loadLib("stopwatch.js");
+loadLib("js_persistence.js");
 loadLib("core.js");
 loadLib("compile.js");
 loadLib("async.js");

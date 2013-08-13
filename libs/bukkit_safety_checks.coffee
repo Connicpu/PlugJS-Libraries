@@ -103,3 +103,35 @@ safeTeleport = (entity, location) ->
   location = GroundFinder::suitableGround location
   throw "No safe location" if not location
   entity.teleport location
+
+#Keep pets from dying
+registerEvent entity, 'damage', (event) ->
+  return unless event.entity instanceof org.bukkit.entity.Tameable
+  return unless event.entity.owner?
+  event.cancelled = yes
+
+#Pets aren't allowed to kill players either, though!
+registerEvent entity, 'damageByEntity', (event) ->
+  return unless event.entity instanceof org.bukkit.entity.Player
+  return unless event.damager instanceof org.bukkit.entity.Tameable
+  return unless event.damager.owner?
+  event.cancelled = yes
+
+#Block PVP unless an internal script wants to allow it
+registerEvent entity, 'damageByEntity', (event) ->
+  return unless event.entity instanceof org.bukkit.entity.Player and (event.damager instanceof org.bukkit.entity.Player or event.damager instanceof org.bukkit.entity.Projectile)
+
+  damager = event.damager.shooter ? event.damager
+  projectile = if event.damager instanceof org.bukkit.entity.Projectile then event.damager else null
+
+  pvpEvent =
+    player: event.entity
+    damager: damager
+    projectile: projectile
+    cancelled: yes
+
+  callEvent js, 'pvp', pvpEvent
+
+  event.cancelled = pvpEvent.cancelled
+
+
