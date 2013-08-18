@@ -16,3 +16,4 @@ class TNTRun
   registerEvent player, 'move', (event) ->
     block = event.player.location.block
     block = block.getRelative org.bukkit.block.BlockFace.DOWN
+    return unless block.type is Material.SAND or block.type is Material.GRAVEL

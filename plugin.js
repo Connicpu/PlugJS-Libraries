@@ -67,7 +67,6 @@ var spout = {
 };
 var exports = {
 };
-var window = this;
 
 var iced;
 var CoffeeScript;

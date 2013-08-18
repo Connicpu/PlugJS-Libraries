@@ -22,7 +22,7 @@ registerEvent player, "chat", (event) ->
       rainbow += "\xA7#{rainbowChars[position]}#{c}"
     return rainbow
 
-  message = message.replace /\&(?=[0-9a-f])/gi, '\xA7' if event.player.hasPermission "js.chat.colors"
+  message = message.replace /\&(?=[0-9a-f])/gi, '\xA7' if event.player.hasPermission("js.chat.colors") or SpecialUsers::IsVeteran event.player
   message = message.replace /\&(?=[k])/gi, '\xA7' if event.player.hasPermission "js.chat.magic"
   message = message.replace /\&(?=[l-o])/gi, '\xA7' if event.player.hasPermission "js.chat.effects"
 
