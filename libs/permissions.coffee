@@ -125,7 +125,14 @@ class Permissions
       get: () -> _s @getSuffix null
       set: (value) -> @setSuffix value, null
 
-  @::promote = (user) ->
+  promotion_disabled = no
+
+  disablePromotion: -> promotion_disabled = yes
+  enablePromotion: -> promotion_disabled = no
+
+  promote: (user) ->
+    throw "Promotion is temporarily disabled" if promotion_disabled
+
     perm = Permissions::getPlayer(user)
     group = _s perm.groups[0]
     throw "You've already accepted the rules :P" unless group is 'default'

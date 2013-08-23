@@ -42,6 +42,9 @@ class PlayerInput
       @player.sendMessage "\xA7eType /cancel to escape"
       super()
 
+    onRegister: ->
+      
+
   awaitChatMessage: (player, message, finished, validCallback) ->
     new ChatbarSession player, message, (event) ->
       if event.cancelled

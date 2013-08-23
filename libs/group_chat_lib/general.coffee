@@ -27,6 +27,13 @@ formatInformation = (event, params) ->
   callEvent js, "chatFormat", fmtEvent
   fmtEvent
 
+global_mute = no
+
 standardChat = (event) ->
+  if global_mute and not event.player.hasPermission '*'
+    event.cancelled = yes
+    event.player.sendMessage "\xA7cGlobal Mute has been activated"
+    return
+
   event.format = formatChat chatFormat, formatInformation event
   ignoreList event.player, event.recipients

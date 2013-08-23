@@ -23,7 +23,8 @@ libraries = [
     "private_warps",
     "code_items",
     "antispam",
-    "pvp"
+    "pvp",
+    "auto_broadcast"
 ];
 var debug_messages = true;
 

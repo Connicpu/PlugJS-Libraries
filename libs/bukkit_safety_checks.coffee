@@ -119,7 +119,14 @@ registerEvent entity, 'damageByEntity', (event) ->
 
 #Block PVP unless an internal script wants to allow it
 registerEvent entity, 'damageByEntity', (event) ->
-  return unless event.entity instanceof org.bukkit.entity.Player and (event.damager instanceof org.bukkit.entity.Player or event.damager instanceof org.bukkit.entity.Projectile)
+  shouldHandle = ->
+    entityIsPlayer = event.entity instanceof org.bukkit.entity.Player
+    damagerIsPlayer = event.damager instanceof org.bukkit.entity.Player
+    damagerIsProjectile = event.damager instanceof org.bukkit.entity.Projectile
+    projectileOwnedByPlayer = damagerIsProjectile and event.damager.shooter instanceof org.bukkit.entity.Player
+    entityIsPlayer and (damagerIsPlayer or projectileOwnedByPlayer)
+
+  return unless shouldHandle()
 
   damager = event.damager.shooter ? event.damager
   projectile = if event.damager instanceof org.bukkit.entity.Projectile then event.damager else null
@@ -134,4 +141,58 @@ registerEvent entity, 'damageByEntity', (event) ->
 
   event.cancelled = pvpEvent.cancelled
 
+registerEvent player, 'chat', (event) ->
+  msg = _s event.message
+  cancel = 
+    /!mine/i.test(msg) or 
+    /!chop/i.test(msg) or
+    /!attack/i.test(msg)
 
+  if cancel
+    event.cancelled = yes
+    event.player.sendMessage "\xA7cThat command has been blocked"
+
+fixItemMetaColors = (dataItem) ->
+  if dataItem instanceof org.bukkit.entity.Player
+    player = dataItem
+    return fixItemMetaColors player.inventory
+  else if dataItem instanceof org.bukkit.inventory.Inventory
+    inventory = dataItem
+    for item in _a inventory
+      fixItemMetaColors item
+    return
+  else if dataItem instanceof org.bukkit.inventory.ItemStack
+    item = dataItem
+    meta = item.itemMeta
+
+    return unless meta?
+
+    badCharPattern = /[\u00C2\u00C3\u00C6\u0192\u2019\u201A]/g
+
+    if meta.displayName?
+      meta.displayName = _s(meta.displayName).replace badCharPattern, ''
+
+      if meta.displayName.equals 'null'
+        meta.displayName = null
+
+    if meta.lore?
+      meta.lore = for l in _a meta.lore
+        _s(l).replace badCharPattern, ''
+
+    item.itemMeta = meta
+    return
+
+registerCommand
+  name: "fixitemcolors",
+  description: "Fixes dem item colors that contain a \xC2",
+  usage: "/<command>",
+  (sender, label, args) ->
+    fixItemMetaColors sender
+    sender.sendMessage "Hopefully it's fixed now :)"
+
+registerEvent player, 'join', (event) ->
+  bukkit_sync ->
+    fixItemMetaColors event.player
+
+registerEvent player, 'teleport', (event) ->
+  fixItemMetaColors event.player

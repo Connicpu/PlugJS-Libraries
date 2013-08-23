@@ -171,11 +171,13 @@ class Pvp
   class PvpSession
     pvp_players = registerHash "pvp_players"
 
+    pvp_players: pvp_players
+
     registerEvent js, 'pvp', (event) ->
       return if Pvp::getDuel(event.player)?
       return unless pvp_players[event.player.name]?
       return unless pvp_players[event.damager.name]?
-
+      
       pvp_players[event.player.name] = TimeSpan::now
       event.cancelled = no
 

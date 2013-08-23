@@ -75,7 +75,6 @@ function registerEvent(handler, eventname, callback) {
             for (var i = 0; i < callbacks.length; ++i) {
                 try {
                     callbacks[i](event);
-                    if (event.cancelled) return;
                 } catch (ex) {
                     if (event instanceof org.bukkit.event.player.PlayerEvent && typeof(ex) === 'string') {
                         event.player.sendMessage(ex);

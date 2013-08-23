@@ -1,1 +1,1 @@
-var npm_path = ""
+var npm_path = "C:\\Users\\Connor\\AppData\\Roaming\\npm\\"

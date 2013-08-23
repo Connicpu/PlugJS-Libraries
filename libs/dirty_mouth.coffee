@@ -5,9 +5,9 @@ asterisks = (input) ->
 
 replacers = [
   # Chat Censor
-  [/\bfuck/i, 'frik']
-  [/shit/i, 'shite']
-  [/nig(g)?er/i, asterisks]
+  [/\bfuck/gi, 'frik']
+  [/shit/gi, 'shite']
+  [/nig(g)?er/gi, asterisks]
   [/\bI will kill you/gi, "I love you long time <3"]
   # General Chat Error Fixes - Things that annoy us
   [/conor|conner|coner|connar|connie/gi, "Connor"]
