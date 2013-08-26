@@ -80,3 +80,19 @@ Object.defineProperty(Object.prototype, 'prop', {
     },
     enumerable: false
 });
+
+function constructObject(constructor, args) {
+    function F() {
+        return constructor.apply(this, args);
+    }
+    F.prototype = constructor.prototype;
+    return new F();
+}
+
+Function.prop('new', {
+    get: function() {
+        return function() {
+            return constructObject(this, arguments);
+        }
+    }
+});

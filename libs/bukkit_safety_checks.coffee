@@ -196,3 +196,8 @@ registerEvent player, 'join', (event) ->
 
 registerEvent player, 'teleport', (event) ->
   fixItemMetaColors event.player
+
+class TpDeath
+  locations: registerHash 'tpdeath_locs'
+  registerEvent player, 'death', (event) ->
+    
