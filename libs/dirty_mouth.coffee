@@ -19,7 +19,7 @@ replacers = [
   # Easter Eggs
   [/abcdefghijklmnopqrstuvwxyz/gi, "I can type the alphabet!"]
   [/123456789(0|10)?/gi, "I can count!"]
-  [/One(?= Direction)/i, "Two"]
+  [/One(?= Direction)/gi, "Two"]
   # IP addresses
   [/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/gi, (input) -> input.replace(/[0-9]+/ig, -> "#{Math.round(Math.random() * 255)}")]
   # Repeated Characters
